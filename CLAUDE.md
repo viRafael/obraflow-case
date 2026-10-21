@@ -44,6 +44,15 @@ Funcionamento completo 25% · Modelagem da alçada 20% · Qualidade de código 1
 - **Não** mostrar "faltam R$ X para mudar de faixa" (incentivaria fracionamento de compra).
 - Os **dados de exemplo** do Prompt 0 (obras, usuários, fornecedores, faixas, pedidos #9–#12) devem ser os mesmos do seed do backend.
 - Depois do design: derivar o contrato da API a partir das telas → backend → front.
+- **Design pronto**, copiado em `docs/design/export/canvas/` (canvas: https://claude.ai/artifact/MVmw1mojRWkZokNnAQhQdp).
+  Fonte visual oficial: `Main`, `Errors`, `NoRule`, `LastItem`, `Mobile`, `EmptyState`, `Ped_*` (exceto os abaixo) e `Alc_Main/Alert/Modal/ModalErrors/Empty/Skeleton`.
+  As telas da linha "Correções" (`NovoPed_Skeleton`, `Toast_*`, `DarkMode_Ped`, `Ped_DrawerBlocked`, `Ped_PostSubmit`, `Ped_MobileDrawer`,
+  `Alc_Unauthorized`) usam outro visual e outros dados: servem só como referência do **estado**, não do layout.
+- Desvios do design a corrigir no código (não no canvas):
+  - PED-001 (R$ 12.500, Ed. Maré) aparece com João → Amanda → Carlos; o correto é **João → Amanda** (faixa 2).
+  - Remover textos de notificação ("Solicitante notificado", "notificado por e-mail"): não existe notificação.
+  - Faixas exibidas como "R$ 10.001": o correto é "R$ 10.000,01"; a faixa 1 começa em R$ 0,00.
+  - Remover: tela 403, botões "Nova obra"/"Cadastrar obra", links de guia/suporte, KPIs inventados do modo escuro, rota de login.
 
 ## Plano de trabalho
 1. **Backend primeiro** (API, modelagem, regras, seed, testes da lógica de alçada).
@@ -58,6 +67,9 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
 - **Faixa modelada só pelo limite superior** (`maxAmount`, `null` = sem limite). A faixa cobre `(limite anterior, maxAmount]`,
   ordenando por `maxAmount`. Assim não existem buracos nem sobreposições por construção. Únicos por obra: `maxAmount` e no máximo uma faixa "sem limite".
 - **Valor sem regra aplicável → bloquear a criação** (422 com mensagem clara). Há um endpoint de prévia da cadeia para o form.
+- **Sem login e sem 403 por cargo** (decidido). Rotas, campos e enums da API **sempre em inglês**; interface em português.
+- **Alçadas: CRUD por faixa** (`POST/PUT/DELETE`), não um `PUT` em lote.
+- **Contrato da API:** `docs/api-contract.md` é a fonte da verdade para rotas, payloads e erros.
 - **Identidade = simulação, sem autenticação.** A decisão é atribuída ao aprovador da etapa atual. O cliente envia o `stepId`
   que está vendo; se não for mais a etapa atual → 409 (impede decisão fora de ordem/duplicada).
 - **Snapshot da cadeia no pedido:** ao criar, os aprovadores são copiados para `ApprovalStep` do pedido; editar regras não afeta pedidos existentes.
