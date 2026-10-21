@@ -10,6 +10,7 @@
     "db:up": "docker compose up -d db",
     "db:down": "docker compose down",
     "dev:api": "pnpm --filter @obraflow/api start:dev",
-    "test:api": "pnpm --filter @obraflow/api test"
+    "test:api": "pnpm --filter @obraflow/api test",
+    "db:migrate": "pnpm --filter @obraflow/api db:migrate"
   }
 }
