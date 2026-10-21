@@ -70,6 +70,7 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
 - **Sem login e sem 403 por cargo** (decidido). Rotas, campos e enums da API **sempre em inglês**; interface em português.
 - **Alçadas: CRUD por faixa** (`POST/PUT/DELETE`), não um `PUT` em lote.
 - **Contrato da API:** `docs/api-contract.md` é a fonte da verdade para rotas, payloads e erros.
+- **PRD:** `docs/prd.md` — critérios de aceite (checklist de verificação final), plano por data e riscos.
 - **Identidade = simulação, sem autenticação.** A decisão é atribuída ao aprovador da etapa atual. O cliente envia o `stepId`
   que está vendo; se não for mais a etapa atual → 409 (impede decisão fora de ordem/duplicada).
 - **Snapshot da cadeia no pedido:** ao criar, os aprovadores são copiados para `ApprovalStep` do pedido; editar regras não afeta pedidos existentes.
