@@ -1,0 +1,23 @@
+# dependências
+node_modules/
+
+# build
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# ambiente
+.env
+.env.*
+!.env.example
+
+# testes
+coverage/
+
+# editor / sistema
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+*.log
