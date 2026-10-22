@@ -86,7 +86,12 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
 - Restrições extras (CHECKs e índice `NULLS NOT DISTINCT`) ficam no SQL da migration init; o índice também está no schema
   (`@@unique([projectId, maxAmount])`) para o Prisma não tentar apagá-lo.
 - Portas: Postgres **5433**, API **3333**, web **3030** (5432/3000 ocupadas por outros projetos do candidato).
-- Comandos (raiz): `pnpm db:up`, `pnpm db:migrate`, `pnpm db:seed` (apaga e recria os dados), `pnpm dev:api`, `pnpm test:api`.
+- Comandos (raiz): `pnpm db:up`, `pnpm db:migrate`, `pnpm db:seed` (apaga e recria os dados), `pnpm dev:api`,
+  `pnpm test:api` (unitários do domínio), `pnpm test:api:e2e` (API inteira contra o banco `dokimos_test`; requer `db:up`).
+- Seed: dados em `prisma/seed-data.ts` (`seed(prisma)`, reutilizado pelos e2e), executável em `prisma/seed.ts`.
+- Módulos: `users`, `projects`, `suppliers`, `approval-rules`, `purchase-orders` (controller → service → presenter; DTOs com class-validator).
+  Decisões: `decide()` em `purchase-orders.service.ts` faz update condicional (`WHERE status=PENDING AND currentStep=X`) → 409 se perder a corrida.
+- Ao testar a API manualmente, encerrar o servidor com `fuser -k 3333/tcp` (um `pkill -f` com o caminho mata o próprio shell).
 - O Prisma 7 bloqueia `migrate reset` vindo de agente de IA sem consentimento explícito do usuário: sempre perguntar.
 
 ## Git / entrega
