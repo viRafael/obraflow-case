@@ -79,7 +79,7 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
 - Valores monetários: `Decimal` no banco, strings no JSON (nunca float). Totais calculados no backend.
 
 ## Backend — estrutura e comandos
-- `apps/api/src/domain/`: regras de negócio **puras** (sem Nest/banco), usadas pela API e pelo seed:
+- `apps/api/src/common/domain/`: regras de negócio **puras** (sem Nest/banco), usadas pela API e pelo seed:
   `money.ts` (Decimal, totais, formatação), `approval-rules.ts` (início das faixas, resolução, cobertura),
   `approval-flow.ts` (máquina de estados: startFlow / approveCurrentStep / rejectCurrentStep).
 - Prisma 7: client gerado em `apps/api/prisma/generated` (ignorado no git; o build compila `src/` + `prisma/generated/`, saída em `dist/src`); adapter `@prisma/adapter-pg`; config em `prisma.config.ts`.

@@ -1,4 +1,4 @@
-import { Prisma } from '../../prisma/generated/client.js';
+import { Prisma } from '../../../prisma/generated/client.js';
 
 // Decimal exato (decimal.js) — o mesmo tipo que o Prisma usa para colunas numeric.
 // Dinheiro e quantidade nunca passam por number/float.

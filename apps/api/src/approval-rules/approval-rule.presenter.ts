@@ -3,8 +3,8 @@ import type {
   ApprovalRuleApprover,
   User,
 } from '../../prisma/generated/client.js';
-import type { RuleWithRange } from '../domain/approval-rules.js';
-import { formatMoney } from '../domain/money.js';
+import type { RuleWithRange } from '../common/domain/approval-rules.js';
+import { formatMoney } from '../common/domain/money.js';
 import { toUserSummary } from '../users/user.presenter.js';
 
 export type RuleWithApprovers = ApprovalRule & {

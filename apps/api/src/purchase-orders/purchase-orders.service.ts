@@ -11,9 +11,9 @@ import {
   type FlowState,
   rejectCurrentStep,
   startFlow,
-} from '../domain/approval-flow.js';
-import { resolveRule } from '../domain/approval-rules.js';
-import { Decimal, itemTotal, orderTotal } from '../domain/money.js';
+} from '../common/domain/approval-flow.js';
+import { resolveRule } from '../common/domain/approval-rules.js';
+import { Decimal, itemTotal, orderTotal } from '../common/domain/money.js';
 import { PrismaService } from '../common/prisma/prisma.service.js';
 import type {
   CreatePurchaseOrderDto,

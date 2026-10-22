@@ -15,9 +15,9 @@ import {
   type FlowState,
   rejectCurrentStep,
   startFlow,
-} from '../src/domain/approval-flow.js';
-import { resolveRule } from '../src/domain/approval-rules.js';
-import { Decimal, itemTotal, orderTotal } from '../src/domain/money.js';
+} from '../src/common/domain/approval-flow.js';
+import { resolveRule } from '../src/common/domain/approval-rules.js';
+import { Decimal, itemTotal, orderTotal } from '../src/common/domain/money.js';
 
 // ---------------------------------------------------------------------------
 // Cadastros
