@@ -4,4 +4,5 @@ packages:
 # pnpm só roda scripts de instalação dos pacotes listados aqui (proteção contra supply chain)
 allowBuilds:
   '@prisma/engines': true
+  esbuild: true
   prisma: true

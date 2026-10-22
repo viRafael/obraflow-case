@@ -78,6 +78,17 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
 - **Rejeição exige motivo** (validado no back também), encerra o fluxo; etapas seguintes ficam `SKIPPED`.
 - Valores monetários: `Decimal` no banco, strings no JSON (nunca float). Totais calculados no backend.
 
+## Backend — estrutura e comandos
+- `apps/api/src/domain/`: regras de negócio **puras** (sem Nest/banco), usadas pela API e pelo seed:
+  `money.ts` (Decimal, totais, formatação), `approval-rules.ts` (início das faixas, resolução, cobertura),
+  `approval-flow.ts` (máquina de estados: startFlow / approveCurrentStep / rejectCurrentStep).
+- Prisma 7: client gerado em `apps/api/src/generated/prisma` (ignorado no git); adapter `@prisma/adapter-pg`; config em `prisma.config.ts`.
+- Restrições extras (CHECKs e índice `NULLS NOT DISTINCT`) ficam no SQL da migration init; o índice também está no schema
+  (`@@unique([projectId, maxAmount])`) para o Prisma não tentar apagá-lo.
+- Portas: Postgres **5433**, API **3333**, web **3030** (5432/3000 ocupadas por outros projetos do candidato).
+- Comandos (raiz): `pnpm db:up`, `pnpm db:migrate`, `pnpm db:seed` (apaga e recria os dados), `pnpm dev:api`, `pnpm test:api`.
+- O Prisma 7 bloqueia `migrate reset` vindo de agente de IA sem consentimento explícito do usuário: sempre perguntar.
+
 ## Git / entrega
 - `origin`   → `git@github.com:viRafael/obraflow-case.git` (fork do candidato, GitHub user `viRafael`)
 - `upstream` → `git@github.com:ObraFlow/obraflow-case.git` (repo deles, só leitura)
