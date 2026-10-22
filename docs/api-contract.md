@@ -68,9 +68,11 @@ Em erros de validação, `details` aponta o campo exato (inclusive dentro de ite
 | 409 | `DUPLICATE_LIMIT` | Já existe uma faixa com esse limite na obra. |
 | 409 | `UNLIMITED_RULE_EXISTS` | A obra já tem uma faixa "sem limite". |
 | 409 | `DUPLICATE_EMAIL` | E-mail de usuário já cadastrado. |
+| 409 | `CONFLICT` | Outra violação de unicidade no banco (rede de segurança). |
 | 422 | `NO_APPROVAL_RULE` | Nenhuma faixa cobre o total do pedido. Pedido não é criado. |
 | 422 | `INVALID_REFERENCE` | Um id referenciado no corpo (obra, fornecedor, usuário) não existe. |
 | 500 | `INTERNAL_ERROR` | Erro inesperado. O front mostra "Tentar novamente". |
+| 503 | `SERVICE_UNAVAILABLE` | Banco de dados fora do ar (`/health`). |
 
 ---
 
@@ -89,7 +91,7 @@ Em erros de validação, `details` aponta o campo exato (inclusive dentro de ite
 
 ### Health
 
-`GET /health` → `200 { "status": "ok" }`. Usado pelo docker compose e pelo front para checar se a API está no ar.
+`GET /health` → `200 { "status": "ok" }`, ou `503 SERVICE_UNAVAILABLE` se o banco estiver fora do ar. Usado pelo docker compose e pelo front para checar se a API está no ar.
 
 ### Usuários
 
