@@ -5,9 +5,18 @@ import { AllExceptionsFilter } from '../common/errors/all-exceptions.filter.js';
 import { createValidationPipe } from '../common/validation/validation.js';
 import { HealthController } from '../health/health.controller.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
+import { ProjectsModule } from '../projects/projects.module.js';
+import { SuppliersModule } from '../suppliers/suppliers.module.js';
+import { UsersModule } from '../users/users.module.js';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    UsersModule,
+    ProjectsModule,
+    SuppliersModule,
+  ],
   controllers: [HealthController],
   providers: [
     // Registrados aqui (e não no main.ts) para valerem também nos testes e2e.
