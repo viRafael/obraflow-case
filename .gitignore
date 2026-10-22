@@ -2,7 +2,7 @@
 node_modules/
 
 # código gerado
-apps/api/src/generated/
+apps/api/prisma/generated/
 
 # build
 dist/

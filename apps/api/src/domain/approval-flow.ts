@@ -1,4 +1,4 @@
-import { OrderStatus, StepStatus } from '../generated/prisma/enums.js';
+import { OrderStatus, StepStatus } from '../../prisma/generated/enums.js';
 
 // Máquina de estados do fluxo de aprovação de um pedido.
 // Funções puras: recebem o estado atual e devolvem o próximo, sem tocar no banco.

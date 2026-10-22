@@ -11,7 +11,7 @@ import {
   PrismaClient,
   StepStatus,
   type Unit,
-} from '../src/generated/prisma/client.js';
+} from './generated/client.js';
 import {
   approveCurrentStep,
   type FlowState,
