@@ -10,7 +10,9 @@ describe('Infraestrutura da API (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
     app = moduleRef.createNestApplication();
     setupApp(app);
     await app.init();
@@ -21,11 +23,15 @@ describe('Infraestrutura da API (e2e)', () => {
   });
 
   it('GET /api/health responde ok com o banco no ar', () => {
-    return request(app.getHttpServer()).get('/api/health').expect(200, { status: 'ok' });
+    return request(app.getHttpServer())
+      .get('/api/health')
+      .expect(200, { status: 'ok' });
   });
 
   it('rota inexistente responde 404 no formato padrão de erro', async () => {
-    const res = await request(app.getHttpServer()).get('/api/nao-existe').expect(404);
+    const res = await request(app.getHttpServer())
+      .get('/api/nao-existe')
+      .expect(404);
     expect(res.body).toEqual({
       statusCode: 404,
       code: 'NOT_FOUND',

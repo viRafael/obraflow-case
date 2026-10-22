@@ -9,7 +9,10 @@ export class UsersController {
   constructor(private readonly users: UsersService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lista os usuários (aprovadores, solicitantes e seletor "Visualizando como")' })
+  @ApiOperation({
+    summary:
+      'Lista os usuários (aprovadores, solicitantes e seletor "Visualizando como")',
+  })
   list() {
     return this.users.list();
   }

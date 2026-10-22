@@ -26,6 +26,12 @@ export class ProjectsService {
 
   async create(dto: CreateProjectDto) {
     const project = await this.prisma.project.create({ data: dto });
-    return { id: project.id, name: project.name, city: project.city, ruleCount: 0, coverage: 'NONE' };
+    return {
+      id: project.id,
+      name: project.name,
+      city: project.city,
+      ruleCount: 0,
+      coverage: 'NONE',
+    };
   }
 }

@@ -4,7 +4,9 @@ import { EmptyToUndefined, Trim } from '../common/validation/decorators.js';
 export class CreateProjectDto {
   /** @example "Torre das Artes" */
   @Trim()
-  @Length(2, 120, { message: 'O nome da obra deve ter entre 2 e 120 caracteres.' })
+  @Length(2, 120, {
+    message: 'O nome da obra deve ter entre 2 e 120 caracteres.',
+  })
   @IsString({ message: 'Informe o nome da obra.' })
   name: string;
 

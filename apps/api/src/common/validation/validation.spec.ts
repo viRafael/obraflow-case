@@ -4,7 +4,11 @@ import { flattenValidationErrors } from './validation.js';
 describe('flattenValidationErrors', () => {
   it('gera o caminho completo dos campos, inclusive dentro de listas', () => {
     const errors: ValidationError[] = [
-      { property: 'supplierId', constraints: { isInt: 'Selecione um fornecedor.' }, children: [] },
+      {
+        property: 'supplierId',
+        constraints: { isInt: 'Selecione um fornecedor.' },
+        children: [],
+      },
       {
         property: 'items',
         children: [
@@ -27,7 +31,10 @@ describe('flattenValidationErrors', () => {
 
     expect(flattenValidationErrors(errors)).toEqual([
       { field: 'supplierId', message: 'Selecione um fornecedor.' },
-      { field: 'items.1.quantity', message: 'A quantidade deve ser maior que zero.' },
+      {
+        field: 'items.1.quantity',
+        message: 'A quantidade deve ser maior que zero.',
+      },
     ]);
   });
 });

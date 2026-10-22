@@ -9,7 +9,10 @@ export class ProjectsController {
   constructor(private readonly projects: ProjectsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lista as obras, com a quantidade de faixas e a cobertura de valores' })
+  @ApiOperation({
+    summary:
+      'Lista as obras, com a quantidade de faixas e a cobertura de valores',
+  })
   list() {
     return this.projects.list();
   }

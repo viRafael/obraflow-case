@@ -21,32 +21,47 @@ export class ApprovalRulesController {
   constructor(private readonly rules: ApprovalRulesService) {}
 
   @Get('projects/:projectId/approval-rules')
-  @ApiOperation({ summary: 'Lista as faixas da obra (ordenadas, com início calculado) e a cobertura' })
+  @ApiOperation({
+    summary:
+      'Lista as faixas da obra (ordenadas, com início calculado) e a cobertura',
+  })
   list(@Param('projectId', ParseIntPipe) projectId: number) {
     return this.rules.list(projectId);
   }
 
   @Get('projects/:projectId/approval-rules/resolve')
-  @ApiOperation({ summary: 'Prévia: qual faixa e cadeia se aplicam a um valor' })
-  resolve(@Param('projectId', ParseIntPipe) projectId: number, @Query() query: ResolveRuleQuery) {
+  @ApiOperation({
+    summary: 'Prévia: qual faixa e cadeia se aplicam a um valor',
+  })
+  resolve(
+    @Param('projectId', ParseIntPipe) projectId: number,
+    @Query() query: ResolveRuleQuery,
+  ) {
     return this.rules.resolve(projectId, query.amount);
   }
 
   @Post('projects/:projectId/approval-rules')
   @ApiOperation({ summary: 'Cria uma faixa na obra' })
-  create(@Param('projectId', ParseIntPipe) projectId: number, @Body() dto: ApprovalRuleDto) {
+  create(
+    @Param('projectId', ParseIntPipe) projectId: number,
+    @Body() dto: ApprovalRuleDto,
+  ) {
     return this.rules.create(projectId, dto);
   }
 
   @Put('approval-rules/:id')
-  @ApiOperation({ summary: 'Substitui o limite e a cadeia de aprovadores da faixa' })
+  @ApiOperation({
+    summary: 'Substitui o limite e a cadeia de aprovadores da faixa',
+  })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: ApprovalRuleDto) {
     return this.rules.update(id, dto);
   }
 
   @Delete('approval-rules/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Remove a faixa (pedidos existentes não são afetados)' })
+  @ApiOperation({
+    summary: 'Remove a faixa (pedidos existentes não são afetados)',
+  })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.rules.remove(id);
   }

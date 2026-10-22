@@ -13,12 +13,21 @@ interface DecimalStringOptions {
   min: 'positive' | 'non-negative';
 }
 
-export function IsDecimalString(options: DecimalStringOptions, validationOptions?: ValidationOptions) {
-  const pattern = new RegExp(`^\\d{1,${options.integerDigits}}(\\.\\d{1,${options.decimals}})?$`);
+export function IsDecimalString(
+  options: DecimalStringOptions,
+  validationOptions?: ValidationOptions,
+) {
+  const pattern = new RegExp(
+    `^\\d{1,${options.integerDigits}}(\\.\\d{1,${options.decimals}})?$`,
+  );
 
   return function (target: object, propertyName: string) {
     Transform(({ value }: { value: unknown }) =>
-      typeof value === 'number' ? String(value) : typeof value === 'string' ? value.trim() : value,
+      typeof value === 'number'
+        ? String(value)
+        : typeof value === 'string'
+          ? value.trim()
+          : value,
     )(target, propertyName);
 
     registerDecorator({

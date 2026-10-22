@@ -7,7 +7,9 @@ export function setupApp(app: INestApplication) {
   const config = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
-  app.enableCors({ origin: config.get<string>('WEB_ORIGIN', 'http://localhost:3030') });
+  app.enableCors({
+    origin: config.get<string>('WEB_ORIGIN', 'http://localhost:3030'),
+  });
   app.enableShutdownHooks();
 
   const document = SwaggerModule.createDocument(

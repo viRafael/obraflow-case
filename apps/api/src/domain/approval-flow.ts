@@ -20,7 +20,8 @@ export class FlowFinishedError extends Error {
 
 /** Fluxo recém-criado: a 1ª etapa aguarda decisão, as demais esperam a vez. */
 export function startFlow(stepCount: number): FlowState {
-  if (stepCount < 1) throw new Error('A cadeia de aprovação precisa ter ao menos 1 etapa.');
+  if (stepCount < 1)
+    throw new Error('A cadeia de aprovação precisa ter ao menos 1 etapa.');
   return {
     status: OrderStatus.PENDING,
     currentStep: 1,

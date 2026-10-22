@@ -21,10 +21,16 @@ export class SuppliersService {
 
   async create(dto: CreateSupplierDto) {
     try {
-      return await this.prisma.supplier.create({ data: dto, select: SUPPLIER_FIELDS });
+      return await this.prisma.supplier.create({
+        data: dto,
+        select: SUPPLIER_FIELDS,
+      });
     } catch (error) {
       if (isUniqueViolation(error, 'taxId')) {
-        throw AppException.conflict('CONFLICT', 'Já existe um fornecedor com este CNPJ.');
+        throw AppException.conflict(
+          'CONFLICT',
+          'Já existe um fornecedor com este CNPJ.',
+        );
       }
       throw error;
     }

@@ -20,7 +20,10 @@ export class UsersService {
       return toUserResponse(await this.prisma.user.create({ data: dto }));
     } catch (error) {
       if (isUniqueViolation(error, 'email')) {
-        throw AppException.conflict('DUPLICATE_EMAIL', 'Já existe um usuário com este e-mail.');
+        throw AppException.conflict(
+          'DUPLICATE_EMAIL',
+          'Já existe um usuário com este e-mail.',
+        );
       }
       throw error;
     }

@@ -1,4 +1,8 @@
-import { HttpStatus, ValidationPipe, type ValidationError } from '@nestjs/common';
+import {
+  HttpStatus,
+  ValidationPipe,
+  type ValidationError,
+} from '@nestjs/common';
 import { AppException, type ErrorDetail } from '../errors/app.exception.js';
 
 /**
@@ -25,7 +29,10 @@ export function createValidationPipe() {
  * Itens de listas viram "items.1.quantity" — o front usa isso para marcar a linha certa.
  * Mostra só a primeira mensagem de cada campo, que é a mais relevante para o usuário.
  */
-export function flattenValidationErrors(errors: ValidationError[], parent = ''): ErrorDetail[] {
+export function flattenValidationErrors(
+  errors: ValidationError[],
+  parent = '',
+): ErrorDetail[] {
   return errors.flatMap((error) => {
     const field = parent ? `${parent}.${error.property}` : error.property;
     const [message] = Object.values(error.constraints ?? {});

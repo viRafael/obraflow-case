@@ -16,8 +16,15 @@ export function initials(name: string): string {
 }
 
 /** Forma resumida do usuário, usada dentro de faixas, etapas e pedidos. */
-export function toUserSummary(user: Pick<User, 'id' | 'name' | 'jobTitle'>): UserSummary {
-  return { id: user.id, name: user.name, jobTitle: user.jobTitle, initials: initials(user.name) };
+export function toUserSummary(
+  user: Pick<User, 'id' | 'name' | 'jobTitle'>,
+): UserSummary {
+  return {
+    id: user.id,
+    name: user.name,
+    jobTitle: user.jobTitle,
+    initials: initials(user.name),
+  };
 }
 
 export function toUserResponse(user: User) {

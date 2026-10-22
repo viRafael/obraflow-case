@@ -20,7 +20,10 @@ export class ApprovalRuleDto {
   @ValidateIf((dto: ApprovalRuleDto) => dto.maxAmount !== null)
   @IsDecimalString(
     { ...MONEY, min: 'positive' },
-    { message: 'O limite deve ser um valor maior que zero, com até 2 casas decimais.' },
+    {
+      message:
+        'O limite deve ser um valor maior que zero, com até 2 casas decimais.',
+    },
   )
   @IsDefined({ message: 'Informe o limite da faixa ou marque "sem limite".' })
   maxAmount: string | null;
@@ -32,7 +35,9 @@ export class ApprovalRuleDto {
    */
   @IsInt({ each: true, message: 'Aprovador inválido.' })
   @IsPositive({ each: true, message: 'Aprovador inválido.' })
-  @ArrayUnique({ message: 'O mesmo aprovador não pode aparecer duas vezes na faixa.' })
+  @ArrayUnique({
+    message: 'O mesmo aprovador não pode aparecer duas vezes na faixa.',
+  })
   @ArrayMaxSize(10, { message: 'A faixa pode ter no máximo 10 aprovadores.' })
   @ArrayMinSize(1, { message: 'Adicione pelo menos 1 aprovador.' })
   @IsArray({ message: 'Adicione pelo menos 1 aprovador.' })

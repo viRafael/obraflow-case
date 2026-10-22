@@ -37,7 +37,10 @@ export class AppException extends HttpException {
     message: string,
     readonly details: ErrorDetail[] = [],
   ) {
-    super({ statusCode: status, code, message, details } satisfies ErrorBody, status);
+    super(
+      { statusCode: status, code, message, details } satisfies ErrorBody,
+      status,
+    );
   }
 
   static notFound(message: string) {
@@ -48,7 +51,16 @@ export class AppException extends HttpException {
     return new AppException(HttpStatus.CONFLICT, code, message);
   }
 
-  static unprocessable(code: ErrorCode, message: string, details: ErrorDetail[] = []) {
-    return new AppException(HttpStatus.UNPROCESSABLE_ENTITY, code, message, details);
+  static unprocessable(
+    code: ErrorCode,
+    message: string,
+    details: ErrorDetail[] = [],
+  ) {
+    return new AppException(
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      code,
+      message,
+      details,
+    );
   }
 }

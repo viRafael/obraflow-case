@@ -22,7 +22,9 @@ export interface Coverage {
 }
 
 /** Ordena as faixas por limite (sem limite por último) e calcula o início de cada uma. */
-export function withRanges<T extends RuleLimit>(rules: T[]): RuleWithRange<T>[] {
+export function withRanges<T extends RuleLimit>(
+  rules: T[],
+): RuleWithRange<T>[] {
   const sorted = [...rules].sort((a, b) => {
     if (a.maxAmount === null) return 1;
     if (b.maxAmount === null) return -1;

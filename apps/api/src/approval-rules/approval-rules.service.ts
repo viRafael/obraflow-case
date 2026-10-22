@@ -5,7 +5,10 @@ import { coverage, resolveRule, withRanges } from '../domain/approval-rules.js';
 import { Decimal, formatBRL, formatMoney } from '../domain/money.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { ApprovalRuleDto } from './approval-rule.dto.js';
-import { type RuleWithApprovers, toRuleResponse } from './approval-rule.presenter.js';
+import {
+  type RuleWithApprovers,
+  toRuleResponse,
+} from './approval-rule.presenter.js';
 
 const WITH_APPROVERS = {
   approvers: { orderBy: { position: 'asc' }, include: { user: true } },
@@ -21,7 +24,10 @@ export class ApprovalRulesService {
     const { status, uncoveredFrom } = coverage(rules);
     return {
       projectId,
-      coverage: { status, uncoveredFrom: uncoveredFrom ? formatMoney(uncoveredFrom) : null },
+      coverage: {
+        status,
+        uncoveredFrom: uncoveredFrom ? formatMoney(uncoveredFrom) : null,
+      },
       data: withRanges(rules).map(toRuleResponse),
     };
   }
@@ -82,13 +88,19 @@ export class ApprovalRulesService {
         message: noRuleMessage(value, project.name),
       };
     }
-    return { amount: formatMoney(value), matched: true, rule: toRuleResponse(rule) };
+    return {
+      amount: formatMoney(value),
+      matched: true,
+      rule: toRuleResponse(rule),
+    };
   }
 
   // -------------------------------------------------------------------------
 
   private async findProject(projectId: number) {
-    const project = await this.prisma.project.findUnique({ where: { id: projectId } });
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+    });
     if (!project) throw AppException.notFound('Obra não encontrada.');
     return project;
   }
@@ -100,21 +112,35 @@ export class ApprovalRulesService {
   }
 
   private findRules(projectId: number): Promise<RuleWithApprovers[]> {
-    return this.prisma.approvalRule.findMany({ where: { projectId }, include: WITH_APPROVERS });
+    return this.prisma.approvalRule.findMany({
+      where: { projectId },
+      include: WITH_APPROVERS,
+    });
   }
 
   /** A posição e o início da faixa dependem das outras faixas da obra, então são recalculados. */
   private async findWithRange(projectId: number, ruleId: number) {
-    const ranged = withRanges(await this.findRules(projectId)).find((rule) => rule.id === ruleId)!;
+    const ranged = withRanges(await this.findRules(projectId)).find(
+      (rule) => rule.id === ruleId,
+    )!;
     return toRuleResponse(ranged);
   }
 
   private async assertUsersExist(userIds: number[]) {
-    const found = await this.prisma.user.count({ where: { id: { in: userIds } } });
+    const found = await this.prisma.user.count({
+      where: { id: { in: userIds } },
+    });
     if (found !== userIds.length) {
-      throw AppException.unprocessable('INVALID_REFERENCE', 'Um ou mais aprovadores não existem.', [
-        { field: 'approverIds', message: 'Selecione apenas usuários cadastrados.' },
-      ]);
+      throw AppException.unprocessable(
+        'INVALID_REFERENCE',
+        'Um ou mais aprovadores não existem.',
+        [
+          {
+            field: 'approverIds',
+            message: 'Selecione apenas usuários cadastrados.',
+          },
+        ],
+      );
     }
   }
 
@@ -123,7 +149,10 @@ export class ApprovalRulesService {
    * (projectId, maxAmount) NULLS NOT DISTINCT — inclusive com requisições simultâneas.
    * Aqui só traduzimos a violação para a mensagem certa.
    */
-  private async saveOrTranslateConflict<T>(dto: ApprovalRuleDto, save: () => Promise<T>) {
+  private async saveOrTranslateConflict<T>(
+    dto: ApprovalRuleDto,
+    save: () => Promise<T>,
+  ) {
     try {
       return await save();
     } catch (error) {
@@ -133,14 +162,24 @@ export class ApprovalRulesService {
           HttpStatus.CONFLICT,
           'UNLIMITED_RULE_EXISTS',
           'Esta obra já tem uma faixa "sem limite".',
-          [{ field: 'maxAmount', message: 'Já existe uma faixa "sem limite" nesta obra.' }],
+          [
+            {
+              field: 'maxAmount',
+              message: 'Já existe uma faixa "sem limite" nesta obra.',
+            },
+          ],
         );
       }
       throw new AppException(
         HttpStatus.CONFLICT,
         'DUPLICATE_LIMIT',
         `Já existe uma faixa com o limite de ${formatBRL(new Decimal(dto.maxAmount))} nesta obra.`,
-        [{ field: 'maxAmount', message: 'Já existe uma faixa com este limite nesta obra.' }],
+        [
+          {
+            field: 'maxAmount',
+            message: 'Já existe uma faixa com este limite nesta obra.',
+          },
+        ],
       );
     }
   }

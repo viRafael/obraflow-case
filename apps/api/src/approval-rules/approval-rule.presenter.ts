@@ -1,4 +1,8 @@
-import type { ApprovalRule, ApprovalRuleApprover, User } from '../../prisma/generated/client.js';
+import type {
+  ApprovalRule,
+  ApprovalRuleApprover,
+  User,
+} from '../../prisma/generated/client.js';
 import type { RuleWithRange } from '../domain/approval-rules.js';
 import { formatMoney } from '../domain/money.js';
 import { toUserSummary } from '../users/user.presenter.js';

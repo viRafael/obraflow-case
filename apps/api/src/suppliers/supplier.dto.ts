@@ -4,7 +4,9 @@ import { EmptyToUndefined, Trim } from '../common/validation/decorators.js';
 export class CreateSupplierDto {
   /** @example "Amanco" */
   @Trim()
-  @Length(2, 120, { message: 'O nome do fornecedor deve ter entre 2 e 120 caracteres.' })
+  @Length(2, 120, {
+    message: 'O nome do fornecedor deve ter entre 2 e 120 caracteres.',
+  })
   @IsString({ message: 'Informe o nome do fornecedor.' })
   name: string;
 
@@ -12,7 +14,9 @@ export class CreateSupplierDto {
   @EmptyToUndefined()
   @Trim()
   @IsOptional()
-  @Matches(/^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/, { message: 'CNPJ inválido.' })
+  @Matches(/^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/, {
+    message: 'CNPJ inválido.',
+  })
   taxId?: string;
 }
 

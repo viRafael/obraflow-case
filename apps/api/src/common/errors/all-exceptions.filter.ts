@@ -8,7 +8,11 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { Prisma } from '../../../prisma/generated/client.js';
-import { AppException, type ErrorBody, type ErrorCode } from './app.exception.js';
+import {
+  AppException,
+  type ErrorBody,
+  type ErrorCode,
+} from './app.exception.js';
 
 // Converte qualquer erro para o formato único do contrato: { statusCode, code, message, details }.
 // Erros inesperados viram 500 genérico (detalhes só no log, nunca na resposta).
@@ -20,7 +24,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse<Response>();
     const body = this.toBody(exception);
     if (body.statusCode >= 500) {
-      this.logger.error(exception instanceof Error ? exception.stack : exception);
+      this.logger.error(
+        exception instanceof Error ? exception.stack : exception,
+      );
     }
     response.status(body.statusCode).json(body);
   }
@@ -55,12 +61,24 @@ export class AllExceptionsFilter implements ExceptionFilter {
 }
 
 // Rede de segurança para violações de restrição do banco que escaparam das validações dos services.
-function fromPrismaError(error: Prisma.PrismaClientKnownRequestError): ErrorBody | null {
+function fromPrismaError(
+  error: Prisma.PrismaClientKnownRequestError,
+): ErrorBody | null {
   switch (error.code) {
     case 'P2025': // registro não encontrado
-      return { statusCode: 404, code: 'NOT_FOUND', message: 'Registro não encontrado.', details: [] };
+      return {
+        statusCode: 404,
+        code: 'NOT_FOUND',
+        message: 'Registro não encontrado.',
+        details: [],
+      };
     case 'P2002': // unique
-      return { statusCode: 409, code: 'CONFLICT', message: 'Já existe um registro com estes dados.', details: [] };
+      return {
+        statusCode: 409,
+        code: 'CONFLICT',
+        message: 'Já existe um registro com estes dados.',
+        details: [],
+      };
     case 'P2003': // foreign key
       return {
         statusCode: 422,
