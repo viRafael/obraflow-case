@@ -8,7 +8,7 @@ import type { ApprovalRuleDto } from './approval-rule.dto.js';
 import {
   type RuleWithApprovers,
   toRuleResponse,
-} from './approval-rule.presenter.js';
+} from './approval-rule.mapper.js';
 
 const WITH_APPROVERS = {
   approvers: { orderBy: { position: 'asc' }, include: { user: true } },

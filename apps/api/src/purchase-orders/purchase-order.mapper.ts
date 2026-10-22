@@ -1,6 +1,6 @@
 import type { Prisma } from '../../prisma/generated/client.js';
 import { formatMoney } from '../common/domain/money.js';
-import { toUserSummary } from '../users/user.presenter.js';
+import { toUserSummary } from '../users/user.mapper.js';
 
 // Formas de carregar o pedido do banco (include) e de convertê-lo para a resposta da API.
 

@@ -24,7 +24,7 @@ import {
   ORDER_SUMMARY_INCLUDE,
   toOrderDetail,
   toOrderSummary,
-} from './purchase-order.presenter.js';
+} from './purchase-order.mapper.js';
 
 type Decision = { action: 'approve' } | { action: 'reject'; reason: string };
 

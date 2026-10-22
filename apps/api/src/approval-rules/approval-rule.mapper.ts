@@ -5,7 +5,7 @@ import type {
 } from '../../prisma/generated/client.js';
 import type { RuleWithRange } from '../common/domain/approval-rules.js';
 import { formatMoney } from '../common/domain/money.js';
-import { toUserSummary } from '../users/user.presenter.js';
+import { toUserSummary } from '../users/user.mapper.js';
 
 export type RuleWithApprovers = ApprovalRule & {
   approvers: (ApprovalRuleApprover & { user: User })[];
