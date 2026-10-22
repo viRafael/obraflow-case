@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppException } from '../common/errors/app.exception.js';
 import { isUniqueViolation } from '../common/errors/prisma-errors.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../common/prisma/prisma.service.js';
 import type { CreateUserDto } from './create-user.dto.js';
 import { toUserResponse } from './user.presenter.js';
 

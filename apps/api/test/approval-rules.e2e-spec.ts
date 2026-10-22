@@ -1,7 +1,7 @@
 import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
-import type { PrismaService } from '../src/prisma/prisma.service.js';
+import type { PrismaService } from '../src/common/prisma/prisma.service.js';
 import { createTestApp, PROJECTS, resetDatabase, USERS } from './helpers.js';
 
 describe('Regras de alçada (e2e)', () => {

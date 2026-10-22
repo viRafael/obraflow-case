@@ -14,7 +14,7 @@ import {
 } from '../domain/approval-flow.js';
 import { resolveRule } from '../domain/approval-rules.js';
 import { Decimal, itemTotal, orderTotal } from '../domain/money.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../common/prisma/prisma.service.js';
 import type {
   CreatePurchaseOrderDto,
   ListPurchaseOrdersQuery,

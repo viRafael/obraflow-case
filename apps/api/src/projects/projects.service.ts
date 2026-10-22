@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { coverage } from '../domain/approval-rules.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../common/prisma/prisma.service.js';
 import type { CreateProjectDto } from './create-project.dto.js';
 
 @Injectable()

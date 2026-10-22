@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppException } from '../common/errors/app.exception.js';
 import { isUniqueViolation } from '../common/errors/prisma-errors.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../common/prisma/prisma.service.js';
 import type { CreateSupplierDto } from './supplier.dto.js';
 
 const SUPPLIER_FIELDS = { id: true, name: true, taxId: true } as const;

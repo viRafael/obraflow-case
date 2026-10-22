@@ -4,7 +4,7 @@ import type { App } from 'supertest/types.js';
 import { seed } from '../prisma/seed-data.js';
 import { AppModule } from '../src/app/app.module.js';
 import { setupApp } from '../src/app/setup.js';
-import { PrismaService } from '../src/prisma/prisma.service.js';
+import { PrismaService } from '../src/common/prisma/prisma.service.js';
 
 /** Sobe a API completa (mesmos pipes, filtros e prefixo do main.ts) contra o banco de teste. */
 export async function createTestApp() {

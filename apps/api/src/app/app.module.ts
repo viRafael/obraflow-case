@@ -5,7 +5,7 @@ import { ApprovalRulesModule } from '../approval-rules/approval-rules.module.js'
 import { AllExceptionsFilter } from '../common/errors/all-exceptions.filter.js';
 import { createValidationPipe } from '../common/validation/validation.js';
 import { HealthController } from '../health/health.controller.js';
-import { PrismaModule } from '../prisma/prisma.module.js';
+import { PrismaModule } from '../common/prisma/prisma.module.js';
 import { PurchaseOrdersModule } from '../purchase-orders/purchase-orders.module.js';
 import { ProjectsModule } from '../projects/projects.module.js';
 import { SuppliersModule } from '../suppliers/suppliers.module.js';

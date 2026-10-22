@@ -3,7 +3,7 @@ import { AppException } from '../common/errors/app.exception.js';
 import { isUniqueViolation } from '../common/errors/prisma-errors.js';
 import { coverage, resolveRule, withRanges } from '../domain/approval-rules.js';
 import { Decimal, formatBRL, formatMoney } from '../domain/money.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../common/prisma/prisma.service.js';
 import type { ApprovalRuleDto } from './approval-rule.dto.js';
 import {
   type RuleWithApprovers,
