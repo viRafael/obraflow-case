@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { ApprovalRulesModule } from '../approval-rules/approval-rules.module.js';
 import { AllExceptionsFilter } from '../common/errors/all-exceptions.filter.js';
 import { createValidationPipe } from '../common/validation/validation.js';
 import { HealthController } from '../health/health.controller.js';
@@ -16,6 +17,7 @@ import { UsersModule } from '../users/users.module.js';
     UsersModule,
     ProjectsModule,
     SuppliersModule,
+    ApprovalRulesModule,
   ],
   controllers: [HealthController],
   providers: [
