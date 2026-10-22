@@ -1,6 +1,9 @@
 # dependências
 node_modules/
 
+# código gerado
+apps/api/src/generated/
+
 # build
 dist/
 .next/
