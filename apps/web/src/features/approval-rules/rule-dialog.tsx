@@ -53,6 +53,8 @@ interface RuleDialogProps {
   projectName: string;
   rules: ApprovalRule[];
   users: User[];
+  /** Estado da lista de usuários (para não dizer "todos já estão na faixa" enquanto carrega). */
+  usersStatus: 'loading' | 'error' | 'ready';
   onClose: () => void;
 }
 
@@ -91,6 +93,7 @@ function RuleForm({
   projectName,
   rules,
   users,
+  usersStatus,
   onClose,
 }: Omit<RuleDialogProps, 'target'> & { rule?: ApprovalRule }) {
   const [draft, setDraft] = useState(() => initialDraft(rule));
@@ -330,9 +333,13 @@ function RuleForm({
           >
             <SelectValue
               placeholder={
-                available.length === 0
-                  ? 'Todos os usuários já estão na faixa'
-                  : 'Adicionar aprovador…'
+                usersStatus === 'loading'
+                  ? 'Carregando usuários…'
+                  : usersStatus === 'error'
+                    ? 'Não foi possível carregar os usuários'
+                    : available.length === 0
+                      ? 'Todos os usuários já estão na faixa'
+                      : 'Adicionar aprovador…'
               }
             />
           </SelectTrigger>

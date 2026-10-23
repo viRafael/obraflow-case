@@ -28,7 +28,7 @@ import {
 /** Tela "Pedidos": central de aprovação. */
 export function OrdersView() {
   const filters = useOrderFilters();
-  const { viewer } = useViewer();
+  const { viewer, usersError, retryUsers } = useViewer();
   const listFilters = useListFilters(filters, viewer?.id);
   const decisions = useDecisionActions();
   const [rejecting, setRejecting] = useState<PurchaseOrderSummary | null>(null);
@@ -79,7 +79,15 @@ export function OrdersView() {
         onProject={filters.setProjectId}
       />
 
-      {list.isError && !list.data ? (
+      {filters.tab === 'minha' && !viewer && usersError ? (
+        // A aba "minha decisão" depende de saber quem é o usuário.
+        <ErrorState
+          className="rounded-lg border bg-card"
+          title="Não foi possível carregar os usuários"
+          error={usersError}
+          onRetry={retryUsers}
+        />
+      ) : list.isError && !list.data ? (
         <ErrorState
           className="rounded-lg border bg-card"
           title="Não foi possível carregar os pedidos"

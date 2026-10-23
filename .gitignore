@@ -18,6 +18,8 @@ next-env.d.ts
 
 # testes
 coverage/
+test-results/
+playwright-report/
 
 # editor / sistema
 *.pem

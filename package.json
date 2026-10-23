@@ -15,7 +15,9 @@
     "db:seed": "pnpm --filter @obraflow/api db:seed",
     "test:api:e2e": "pnpm --filter @obraflow/api test:e2e",
     "dev:web": "pnpm --filter @obraflow/web dev",
-    "test:web": "pnpm --filter @obraflow/web test"
+    "test:web": "pnpm --filter @obraflow/web test",
+    "test:web:e2e": "pnpm --filter @obraflow/web test:e2e",
+    "test": "pnpm test:api && pnpm test:web"
   },
   "devDependencies": {
     "prettier": "^3.9.10",

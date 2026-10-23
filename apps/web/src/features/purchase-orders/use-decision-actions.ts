@@ -26,7 +26,10 @@ export function useDecisionActions() {
         error.code === 'ORDER_ALREADY_DECIDED')
     ) {
       toast.warning('Este pedido já foi decidido', {
-        description: `${error.message} A lista foi atualizada.`,
+        description:
+          error.code === 'STEP_NOT_CURRENT'
+            ? 'Outra pessoa decidiu antes de você. A lista foi atualizada com a situação atual.'
+            : `${error.message} A lista foi atualizada.`,
       });
       return;
     }

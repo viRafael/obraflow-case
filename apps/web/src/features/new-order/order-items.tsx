@@ -18,11 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { formatBRL, UNIT_LABELS } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import {
@@ -64,7 +59,8 @@ export function OrderItems() {
           aria-hidden="true"
           className={cn(
             ROW_GRID,
-            'hidden px-0.5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase md:grid',
+            'hidden px-0.5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase',
+            fields.length > 0 && 'md:grid',
           )}
         >
           <span>Descrição</span>
@@ -75,12 +71,26 @@ export function OrderItems() {
           <span />
         </div>
 
+        {fields.length === 0 && (
+          <div
+            role="alert"
+            className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-danger-border bg-danger-soft/50 px-4 py-6 text-center"
+          >
+            <CircleAlert className="size-5 text-danger" aria-hidden="true" />
+            <p className="text-sm font-medium text-danger-strong">
+              O pedido precisa ter pelo menos 1 item.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Adicione um item para poder cadastrar o pedido.
+            </p>
+          </div>
+        )}
+
         <ol className="space-y-3 md:space-y-2">
           {fields.map((field, index) => (
             <ItemRow
               key={field.id}
               index={index}
-              isOnly={fields.length === 1}
               isLast={index === fields.length - 1}
               onRemove={() => remove(index)}
               onAddAfter={addItem}
@@ -112,13 +122,11 @@ export function OrderItems() {
 
 function ItemRow({
   index,
-  isOnly,
   isLast,
   onRemove,
   onAddAfter,
 }: {
   index: number;
-  isOnly: boolean;
   isLast: boolean;
   onRemove: () => void;
   onAddAfter: () => void;
@@ -208,6 +216,7 @@ function ItemRow({
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger
+                ref={field.ref}
                 id={`item-${index}-unit`}
                 className="w-full"
                 aria-invalid={errors.unit ? true : undefined}
@@ -271,7 +280,7 @@ function ItemRow({
       </div>
 
       <div className="col-span-2 flex justify-end md:col-span-1">
-        <RemoveButton number={number} disabled={isOnly} onClick={onRemove} />
+        <RemoveButton number={number} onClick={onRemove} />
       </div>
     </li>
   );
@@ -279,38 +288,23 @@ function ItemRow({
 
 function RemoveButton({
   number,
-  disabled,
   onClick,
 }: {
   number: number;
-  disabled: boolean;
   onClick: () => void;
 }) {
-  const button = (
+  return (
     <Button
       type="button"
       variant="ghost"
       size="sm"
       onClick={onClick}
-      disabled={disabled}
       aria-label={`Remover item ${number}`}
       className="h-8 text-muted-foreground hover:bg-danger-soft hover:text-danger md:w-8 md:px-0"
     >
       <X aria-hidden="true" />
       <span className="md:hidden">Remover</span>
     </Button>
-  );
-  if (!disabled) return button;
-  // Botão desabilitado não recebe hover: o tooltip fica num wrapper.
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span tabIndex={0} className="inline-flex">
-          {button}
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>O pedido precisa ter pelo menos 1 item.</TooltipContent>
-    </Tooltip>
   );
 }
 

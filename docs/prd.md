@@ -47,52 +47,52 @@ pedido; notificações; telas de cadastro de obra, usuário e fornecedor.
 Cada critério é verificável no app ou num teste. **[T]** = coberto por teste automatizado no backend.
 
 ### 5.1 Novo pedido
-- [ ] A tela abre com 1 item em branco; é possível adicionar, editar e remover itens.
-- [ ] Não é possível remover o último item; a tela explica o motivo.
-- [ ] Total do item = quantidade × preço, não editável; total do pedido = soma dos itens, sempre visível.
-- [ ] Obra, fornecedor, data e descrição vazios mostram erro no próprio campo.
-- [ ] Quantidade ≤ 0, preço < 0 ou valores não numéricos mostram erro na linha do item.
-- [ ] O botão "Cadastrar pedido" só fica habilitado com tudo válido; desabilitado, lista as pendências.
-- [ ] O painel mostra a faixa e a cadeia prevista para o total atual.
-- [ ] Total sem faixa aplicável: alerta claro, link para Alçadas e botão bloqueado.
-- [ ] Sem obras cadastradas: empty state, não tela branca.
-- [ ] Após cadastrar: toast com o código e o primeiro aprovador; redireciona para a lista destacando o pedido.
-- [ ] **[T]** A API recusa itens inválidos (400 com `details` por campo), lista vazia de itens e referências inexistentes (422).
-- [ ] **[T]** A API recalcula os totais e ignora qualquer total vindo do cliente.
-- [ ] **[T]** Total sem faixa → 422 `NO_APPROVAL_RULE`, nada é gravado.
-- [ ] **[T]** Pedido criado grava cabeçalho, itens, totais, etapas (1ª `PENDING`, demais `WAITING`) e evento `CREATED`, tudo numa transação.
+- [x] A tela abre com 1 item em branco; é possível adicionar, editar e remover itens.
+- [x] Removendo todos os itens, a tela mostra "O pedido precisa ter pelo menos 1 item." e não envia.
+- [x] Total do item = quantidade × preço, não editável; total do pedido = soma dos itens, sempre visível.
+- [x] Obra, fornecedor, data e descrição vazios mostram erro no próprio campo.
+- [x] Quantidade ≤ 0, preço < 0 ou valores não numéricos mostram erro na linha do item.
+- [x] O botão "Cadastrar pedido" só fica habilitado com tudo válido; desabilitado, lista as pendências.
+- [x] O painel mostra a faixa e a cadeia prevista para o total atual.
+- [x] Total sem faixa aplicável: alerta claro, link para Alçadas e botão bloqueado.
+- [x] Sem obras cadastradas: empty state, não tela branca.
+- [x] Após cadastrar: toast com o código e o primeiro aprovador; redireciona para a lista destacando o pedido.
+- [x] **[T]** A API recusa itens inválidos (400 com `details` por campo), lista vazia de itens e referências inexistentes (422).
+- [x] **[T]** A API recalcula os totais e ignora qualquer total vindo do cliente.
+- [x] **[T]** Total sem faixa → 422 `NO_APPROVAL_RULE`, nada é gravado.
+- [x] **[T]** Pedido criado grava cabeçalho, itens, totais, etapas (1ª `PENDING`, demais `WAITING`) e evento `CREATED`, tudo numa transação.
 
 ### 5.2 Pedidos (aprovação)
-- [ ] A lista mostra código, data, obra, fornecedor, nº de itens, total, situação e stepper da alçada.
-- [ ] Abas Aguardando minha decisão / Pendentes / Aprovados / Rejeitados / Todos, com contadores; filtro por obra; busca.
-- [ ] Aprovar/Rejeitar aparecem só para o aprovador da vez; os outros veem "Aguardando <nome>".
-- [ ] O drawer mostra itens (descrição, qtd, unidade, preço, total) e o histórico em linha do tempo.
-- [ ] Rejeitar abre um modal; o envio fica bloqueado sem motivo (mín. 10 caracteres).
-- [ ] Pedido aprovado ou rejeitado: ações desabilitadas com explicação; o motivo da rejeição aparece no histórico.
-- [ ] Decisão já tomada por outra pessoa (409): toast de conflito e a lista recarrega.
-- [ ] Loading (skeleton), lista vazia e erro com "Tentar novamente".
-- [ ] **[T]** Aprovar avança para a próxima etapa; a última aprovação deixa o pedido `APPROVED`.
-- [ ] **[T]** Rejeitar exige motivo, deixa o pedido `REJECTED`, marca as etapas seguintes como `SKIPPED` e grava o motivo no histórico.
-- [ ] **[T]** `stepId` que não é a etapa atual → 409 `STEP_NOT_CURRENT`; pedido já decidido → 409 `ORDER_ALREADY_DECIDED`.
-- [ ] **[T]** Duas aprovações simultâneas da mesma etapa: só uma é aplicada.
+- [x] A lista mostra código, data, obra, fornecedor, nº de itens, total, situação e stepper da alçada.
+- [x] Abas Aguardando minha decisão / Pendentes / Aprovados / Rejeitados / Todos, com contadores; filtro por obra; busca.
+- [x] Aprovar/Rejeitar aparecem só para o aprovador da vez; os outros veem "Aguardando <nome>".
+- [x] O drawer mostra itens (descrição, qtd, unidade, preço, total) e o histórico em linha do tempo.
+- [x] Rejeitar abre um modal; o envio fica bloqueado sem motivo (mín. 10 caracteres).
+- [x] Pedido aprovado ou rejeitado: ações desabilitadas com explicação; o motivo da rejeição aparece no histórico.
+- [x] Decisão já tomada por outra pessoa (409): toast de conflito e a lista recarrega.
+- [x] Loading (skeleton), lista vazia e erro com "Tentar novamente".
+- [x] **[T]** Aprovar avança para a próxima etapa; a última aprovação deixa o pedido `APPROVED`.
+- [x] **[T]** Rejeitar exige motivo, deixa o pedido `REJECTED`, marca as etapas seguintes como `SKIPPED` e grava o motivo no histórico.
+- [x] **[T]** `stepId` que não é a etapa atual → 409 `STEP_NOT_CURRENT`; pedido já decidido → 409 `ORDER_ALREADY_DECIDED`.
+- [x] **[T]** Duas aprovações simultâneas da mesma etapa: só uma é aplicada.
 
 ### 5.3 Alçadas
-- [ ] É possível selecionar a obra e ver as faixas ordenadas, com início calculado e cadeia de aprovadores.
-- [ ] Criar, editar e remover faixas; definir o limite ou "sem limite".
-- [ ] Adicionar, remover e reordenar aprovadores (arrastar e botões ↑ ↓), escolhendo entre os usuários disponíveis.
-- [ ] A régua de valores mostra a cobertura; sem faixa "sem limite", destaca o trecho bloqueado.
-- [ ] "Testar valor" mostra a faixa e a cadeia aplicadas ou "nenhuma faixa cobre".
-- [ ] Obra sem faixas: empty state explicando que os pedidos estão bloqueados.
-- [ ] Erros de validação no modal: limite duplicado, segunda faixa "sem limite", nenhum aprovador.
-- [ ] Loading e erro com "Tentar novamente".
-- [ ] **[T]** A resolução de faixa respeita os limites: exatamente no limite cai na faixa; 1 centavo acima cai na próxima; total 0,00 cai na 1ª.
-- [ ] **[T]** Limite duplicado → 409; segunda faixa sem limite → 409; aprovador repetido ou lista vazia → 400.
-- [ ] **[T]** Editar ou remover uma faixa não altera pedidos já criados.
+- [x] É possível selecionar a obra e ver as faixas ordenadas, com início calculado e cadeia de aprovadores.
+- [x] Criar, editar e remover faixas; definir o limite ou "sem limite".
+- [x] Adicionar, remover e reordenar aprovadores (arrastar e botões ↑ ↓), escolhendo entre os usuários disponíveis.
+- [x] A régua de valores mostra a cobertura; sem faixa "sem limite", destaca o trecho bloqueado.
+- [x] "Testar valor" mostra a faixa e a cadeia aplicadas ou "nenhuma faixa cobre".
+- [x] Obra sem faixas: empty state explicando que os pedidos estão bloqueados.
+- [x] Erros de validação no modal: limite duplicado, segunda faixa "sem limite", nenhum aprovador.
+- [x] Loading e erro com "Tentar novamente".
+- [x] **[T]** A resolução de faixa respeita os limites: exatamente no limite cai na faixa; 1 centavo acima cai na próxima; total 0,00 cai na 1ª.
+- [x] **[T]** Limite duplicado → 409; segunda faixa sem limite → 409; aprovador repetido ou lista vazia → 400.
+- [x] **[T]** Editar ou remover uma faixa não altera pedidos já criados.
 
 ### 5.4 Geral
 - [ ] `docker compose up` sobe banco, API e front; o seed popula ao menos 2 obras, usuários, fornecedores, faixas e pedidos nos 3 estados.
-- [ ] Layout responsivo em 375 px sem scroll horizontal.
-- [ ] API fora do ar: todas as telas mostram erro com "Tentar novamente", nunca tela branca.
+- [x] Layout responsivo em 375 px sem scroll horizontal.
+- [x] API fora do ar: todas as telas mostram erro com "Tentar novamente", nunca tela branca.
 - [ ] README com: como rodar, seed, endpoints, screenshots, tecnologias e motivos, modelagem da alçada,
       comunicação front/back, consistência e integridade, o que mudaria em produção.
 

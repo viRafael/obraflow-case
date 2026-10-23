@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 import type { OrderStatus, PurchaseOrderFilters } from '@/lib/api/types';
 
@@ -36,7 +36,6 @@ function positiveInt(value: string | null): number | undefined {
 
 export function useOrderFilters() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
 
   const tabParam = searchParams.get('aba');
@@ -49,20 +48,27 @@ export function useOrderFilters() {
   const openOrderId = positiveInt(searchParams.get('pedido'));
   const highlightId = positiveInt(searchParams.get('destaque'));
 
-  /** Atualiza parâmetros da URL sem empilhar histórico (null remove o parâmetro). */
+  /**
+   * Atualiza parâmetros da URL sem empilhar histórico (null remove o parâmetro).
+   * Usa o History API nativo (integrado ao useSearchParams no Next): a URL muda na hora, sem ida ao
+   * servidor. Com router.replace a troca é assíncrona, e a busca (que atualiza a URL com atraso)
+   * podia ler a URL antiga e desfazer um filtro escolhido nesse meio-tempo.
+   */
   const update = useCallback(
     (changes: Record<string, string | number | null>) => {
-      const next = new URLSearchParams(searchParams.toString());
+      const next = new URLSearchParams(window.location.search);
       for (const [key, value] of Object.entries(changes)) {
         if (value === null || value === '') next.delete(key);
         else next.set(key, String(value));
       }
       const query = next.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, {
-        scroll: false,
-      });
+      window.history.replaceState(
+        null,
+        '',
+        query ? `${pathname}?${query}` : pathname,
+      );
     },
-    [pathname, router, searchParams],
+    [pathname],
   );
 
   return {

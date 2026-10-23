@@ -43,13 +43,16 @@ interface ViewerContextValue {
   viewer: User | undefined;
   users: User[];
   isLoading: boolean;
+  /** Falha ao carregar os usuários (API fora do ar). */
+  usersError: unknown;
+  retryUsers: () => void;
   setViewerId: (id: number) => void;
 }
 
 const ViewerContext = createContext<ViewerContextValue | null>(null);
 
 export function ViewerProvider({ children }: { children: ReactNode }) {
-  const { data, isLoading } = useUsers();
+  const { data, isLoading, error, refetch } = useUsers();
   const users = useMemo(() => data?.data ?? [], [data]);
   const storedId = useSyncExternalStore(
     subscribe,
@@ -72,8 +75,15 @@ export function ViewerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ viewer, users, isLoading, setViewerId }),
-    [viewer, users, isLoading, setViewerId],
+    () => ({
+      viewer,
+      users,
+      isLoading,
+      usersError: error,
+      retryUsers: () => void refetch(),
+      setViewerId,
+    }),
+    [viewer, users, isLoading, error, refetch, setViewerId],
   );
   return (
     <ViewerContext.Provider value={value}>{children}</ViewerContext.Provider>

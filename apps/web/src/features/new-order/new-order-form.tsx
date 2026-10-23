@@ -72,7 +72,25 @@ export function NewOrderForm({ projects }: { projects: Project[] }) {
     defaultValues: defaultValues(),
     mode: 'onTouched', // erro aparece ao sair do campo, não enquanto a pessoa ainda digita
   });
-  const { control, register, handleSubmit, setError, reset, formState } = form;
+  const {
+    control,
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState,
+    trigger,
+    setFocus,
+  } = form;
+
+  /**
+   * Clique numa pendência: valida o formulário inteiro (todos os campos com problema passam a
+   * mostrar o erro no próprio campo, mesmo os que a pessoa ainda não visitou) e leva o foco até ele.
+   */
+  async function revealIssue(field?: string) {
+    await trigger();
+    if (field) setFocus(field as Path<OrderFormValues>);
+  }
   const values = useWatch({ control }) as OrderFormValues;
 
   const projectId = values.projectId ? Number(values.projectId) : undefined;
@@ -96,10 +114,15 @@ export function NewOrderForm({ projects }: { projects: Project[] }) {
 
   const issues = useMemo(() => {
     const list = pendingIssues(values);
-    if (!viewer)
-      list.push('Selecione quem está fazendo o pedido em “Visualizando como”.');
+    if (!viewer) {
+      list.push({
+        message: 'Selecione quem está fazendo o pedido em “Visualizando como”.',
+      });
+    }
     if (resolve.data && !resolve.data.matched && debouncedTotal === total) {
-      list.push('Nenhuma faixa de alçada cobre o total do pedido nesta obra.');
+      list.push({
+        message: 'Nenhuma faixa de alçada cobre o total do pedido nesta obra.',
+      });
     }
     return list;
   }, [values, viewer, resolve.data, debouncedTotal, total]);
@@ -171,6 +194,7 @@ export function NewOrderForm({ projects }: { projects: Project[] }) {
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
+                        ref={field.ref}
                         id="projectId"
                         className="w-full"
                         aria-invalid={
@@ -208,10 +232,13 @@ export function NewOrderForm({ projects }: { projects: Project[] }) {
                   name="supplierId"
                   render={({ field }) => (
                     <SupplierCombobox
+                      buttonRef={field.ref}
                       id="supplierId"
                       value={field.value}
                       suppliers={suppliers.data?.data ?? []}
                       isLoading={suppliers.isLoading}
+                      isError={suppliers.isError}
+                      onRetry={() => void suppliers.refetch()}
                       invalid={Boolean(fieldError('supplierId'))}
                       onChange={field.onChange}
                       onBlur={field.onBlur}
@@ -260,6 +287,7 @@ export function NewOrderForm({ projects }: { projects: Project[] }) {
             projectName={project?.name}
             chain={chain}
             issues={issues}
+            onIssueClick={revealIssue}
             isSubmitting={createOrder.isPending}
           />
         </div>
@@ -269,6 +297,7 @@ export function NewOrderForm({ projects }: { projects: Project[] }) {
           projectName={project?.name}
           chain={chain}
           issues={issues}
+          onIssueClick={revealIssue}
           isSubmitting={createOrder.isPending}
         />
       </form>

@@ -74,23 +74,31 @@ export function orderTotalOf(items: OrderItemValues[]): string | null {
   return orderTotal(totals as string[]);
 }
 
-/** Lista de pendências (mostrada embaixo do botão quando ele está desabilitado). */
-export function pendingIssues(values: OrderFormValues): string[] {
+export interface PendingIssue {
+  /** Caminho do campo no formulário ("items.1.quantity"); ausente para pendências gerais. */
+  field?: string;
+  message: string;
+}
+
+/** Lista de pendências (mostrada embaixo do botão enquanto ele está desabilitado). */
+export function pendingIssues(values: OrderFormValues): PendingIssue[] {
   const result = orderFormSchema.safeParse(values);
   if (result.success) return [];
   // Uma pendência por campo (a primeira mensagem, que é a mais relevante).
   const seenFields = new Set<string>();
-  const issues: string[] = [];
+  const issues: PendingIssue[] = [];
   for (const issue of result.error.issues) {
-    const fieldKey = issue.path.join('.');
-    if (seenFields.has(fieldKey)) continue;
-    seenFields.add(fieldKey);
-    const [field, index] = issue.path;
-    issues.push(
-      field === 'items' && typeof index === 'number'
-        ? `Item ${index + 1}: ${lowerFirst(issue.message)}`
-        : issue.message,
-    );
+    const field = issue.path.join('.');
+    if (seenFields.has(field)) continue;
+    seenFields.add(field);
+    const [name, index] = issue.path;
+    issues.push({
+      field,
+      message:
+        name === 'items' && typeof index === 'number'
+          ? `Item ${index + 1}: ${lowerFirst(issue.message)}`
+          : issue.message,
+    });
   }
   return issues;
 }

@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { ResolveRuleResponse } from '@/lib/api/types';
 import { formatBRL, formatRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import type { PendingIssue } from './order-form-schema';
 
 export interface ChainPreview {
   /** Prévia indisponível e por quê (sem obra, itens inválidos). */
@@ -22,7 +23,8 @@ interface OrderSummaryProps {
   itemCount: number;
   projectName: string | undefined;
   chain: ChainPreview;
-  issues: string[];
+  issues: PendingIssue[];
+  onIssueClick: (field?: string) => void;
   isSubmitting: boolean;
 }
 
@@ -33,6 +35,7 @@ export function OrderSummary({
   projectName,
   chain,
   issues,
+  onIssueClick,
   isSubmitting,
 }: OrderSummaryProps) {
   return (
@@ -75,7 +78,7 @@ export function OrderSummary({
 
         <div className="border-t pt-5">
           <SubmitButton issues={issues} isSubmitting={isSubmitting} />
-          <IssuesList issues={issues} />
+          <IssuesList issues={issues} onIssueClick={onIssueClick} />
         </div>
       </div>
     </section>
@@ -88,6 +91,7 @@ export function OrderSummaryBar({
   itemCount,
   chain,
   issues,
+  onIssueClick,
   isSubmitting,
 }: OrderSummaryProps) {
   const rule = chain.data?.matched ? chain.data.rule : undefined;
@@ -113,10 +117,14 @@ export function OrderSummaryBar({
       )}
       <SubmitButton issues={issues} isSubmitting={isSubmitting} />
       {issues.length > 0 && (
-        <p className="text-center text-xs text-muted-foreground">
-          {issues[0]}
+        <button
+          type="button"
+          onClick={() => onIssueClick(issues[0].field)}
+          className="block w-full text-center text-xs text-muted-foreground underline-offset-2 hover:underline"
+        >
+          Falta: {issues[0].message}
           {issues.length > 1 && ` (+${issues.length - 1})`}
-        </p>
+        </button>
       )}
     </div>
   );
@@ -126,7 +134,7 @@ function SubmitButton({
   issues,
   isSubmitting,
 }: {
-  issues: string[];
+  issues: PendingIssue[];
   isSubmitting: boolean;
 }) {
   return (
@@ -145,7 +153,13 @@ function SubmitButton({
 
 const MAX_VISIBLE_ISSUES = 5;
 
-function IssuesList({ issues }: { issues: string[] }) {
+function IssuesList({
+  issues,
+  onIssueClick,
+}: {
+  issues: PendingIssue[];
+  onIssueClick: (field?: string) => void;
+}) {
   if (issues.length === 0) return null;
   const hidden = issues.length - MAX_VISIBLE_ISSUES;
   return (
@@ -155,14 +169,18 @@ function IssuesList({ issues }: { issues: string[] }) {
       </p>
       <ul className="mt-1.5 space-y-1">
         {issues.slice(0, MAX_VISIBLE_ISSUES).map((issue) => (
-          <li
-            key={issue}
-            className="flex gap-1.5 text-xs text-muted-foreground"
-          >
+          <li key={issue.message} className="flex gap-1.5 text-xs">
             <span className="text-danger" aria-hidden="true">
               •
             </span>
-            {issue}
+            {/* Clicar mostra o erro no campo e leva o foco até ele. */}
+            <button
+              type="button"
+              onClick={() => onIssueClick(issue.field)}
+              className="text-left text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:underline focus-visible:outline-none"
+            >
+              {issue.message}
+            </button>
           </li>
         ))}
         {hidden > 0 && (

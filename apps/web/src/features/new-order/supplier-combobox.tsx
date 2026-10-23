@@ -20,9 +20,14 @@ import { cn } from '@/lib/utils';
 
 interface SupplierComboboxProps {
   id: string;
+  /** ref do react-hook-form, para o foco ir até o campo ao clicar numa pendência. */
+  buttonRef?: React.Ref<HTMLButtonElement>;
   value: string;
   suppliers: Supplier[];
   isLoading: boolean;
+  /** Falha ao carregar a lista (API fora do ar). */
+  isError: boolean;
+  onRetry: () => void;
   invalid: boolean;
   describedBy?: string;
   onChange: (value: string) => void;
@@ -32,9 +37,12 @@ interface SupplierComboboxProps {
 /** Fornecedor com busca por nome (a lista é pequena: filtra no navegador). */
 export function SupplierCombobox({
   id,
+  buttonRef,
   value,
   suppliers,
   isLoading,
+  isError,
+  onRetry,
   invalid,
   describedBy,
   onChange,
@@ -53,6 +61,7 @@ export function SupplierCombobox({
     >
       <PopoverTrigger asChild>
         <button
+          ref={buttonRef}
           id={id}
           type="button"
           role="combobox"
@@ -85,7 +94,22 @@ export function SupplierCombobox({
         <Command>
           <CommandInput placeholder="Buscar fornecedor…" />
           <CommandList>
-            <CommandEmpty>Nenhum fornecedor encontrado.</CommandEmpty>
+            <CommandEmpty>
+              {isError ? (
+                <span className="flex flex-col items-center gap-2">
+                  Não foi possível carregar os fornecedores.
+                  <button
+                    type="button"
+                    onClick={onRetry}
+                    className="font-medium text-primary underline underline-offset-2"
+                  >
+                    Tentar novamente
+                  </button>
+                </span>
+              ) : (
+                'Nenhum fornecedor encontrado.'
+              )}
+            </CommandEmpty>
             <CommandGroup>
               {suppliers.map((supplier) => (
                 <CommandItem

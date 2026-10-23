@@ -3,9 +3,12 @@ import {
   emptyItem,
   type OrderFormValues,
   orderTotalOf,
-  pendingIssues,
+  pendingIssues as pendingIssueList,
   toCreateInput,
 } from './order-form-schema';
+
+const pendingIssues = (values: OrderFormValues) =>
+  pendingIssueList(values).map((issue) => issue.message);
 
 const valid: OrderFormValues = {
   projectId: '1',

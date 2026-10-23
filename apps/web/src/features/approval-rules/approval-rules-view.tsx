@@ -1,7 +1,7 @@
 'use client';
 
 import { HardHat, Layers, Plus, Rows3, TriangleAlert } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { EmptyState, ErrorState } from '@/components/states';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,6 @@ import { RulesTable } from './rules-table';
 export function ApprovalRulesView() {
   const projects = useProjects();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
 
   if (projects.isError && !projects.data) {
@@ -55,8 +54,9 @@ export function ApprovalRulesView() {
       <ProjectPicker
         projects={list}
         selectedId={project.id}
+        // History API nativo: troca a obra na URL na hora, sem ida ao servidor.
         onSelect={(id) =>
-          router.replace(`${pathname}?obra=${id}`, { scroll: false })
+          window.history.replaceState(null, '', `${pathname}?obra=${id}`)
         }
       />
       {/* key: trocar de obra recomeça os estados da tela (modais, valor testado). */}
@@ -151,6 +151,7 @@ function ProjectRules({ project }: { project: Project }) {
         projectName={project.name}
         rules={list}
         users={users.data?.data ?? []}
+        usersStatus={users.isError ? 'error' : users.data ? 'ready' : 'loading'}
         onClose={() => setDialog(null)}
       />
       <RemoveRuleDialog

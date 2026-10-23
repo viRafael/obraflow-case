@@ -122,6 +122,13 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
   `read_page`/`find` da extensão funcionam mesmo com a janela escondida.
 - Tela de Pedidos (`features/purchase-orders/`): estado na URL (`?aba=&obra=&busca=&pagina=&pedido=&destaque=`); contadores das abas
   vêm de uma consulta separada com `awaitingUserId` + `pageSize=1` (a API filtra a lista por esse parâmetro).
+- **Testes do front**: unitários com Vitest (`pnpm test:web`: dinheiro, formatação, schema do pedido, rascunho de faixa) e
+  **e2e com Playwright** (`pnpm test:web:e2e`, `apps/web/e2e/`): sobe uma API própria em :3334 (banco `dokimos_test`, resetado com
+  `apps/api/test/test-db.ts reset` antes de cada teste) e um `next dev` em :3031. Navegador: `PLAYWRIGHT_CHROMIUM_PATH=/usr/bin/brave`
+  (máquina do candidato) ou `pnpm exec playwright install chromium`. Cobre as 3 telas, estados de erro/vazio/loading, 409 e celular.
+- Decisões da revisão do front: filtros na URL via `window.history.replaceState` (com `router.replace` a URL muda de forma assíncrona e a
+  busca com debounce desfazia o filtro de obra); pendências do formulário são clicáveis (validam tudo e focam o campo); é possível remover
+  todos os itens (mostra o erro "pelo menos 1 item", requisito do README).
 - Prettier compartilhado na raiz (`.prettierrc`, com `prettier-plugin-tailwindcss` ordenando as classes).
 
 ## Git / entrega
