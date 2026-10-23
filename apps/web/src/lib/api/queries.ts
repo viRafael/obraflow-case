@@ -79,11 +79,15 @@ export function useResolveRule(
   });
 }
 
-export function usePurchaseOrders(filters: PurchaseOrderFilters) {
+export function usePurchaseOrders(
+  filters: PurchaseOrderFilters,
+  options: { enabled?: boolean } = {},
+) {
   return useQuery({
     queryKey: queryKeys.purchaseOrderList(filters),
     queryFn: () => purchaseOrdersApi.list(filters),
     placeholderData: keepPreviousData,
+    enabled: options.enabled ?? true,
   });
 }
 

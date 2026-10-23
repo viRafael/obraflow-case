@@ -152,6 +152,19 @@
   --info-strong: var(--color-blue-300);
 }
 
+/* Destaque do pedido recém-cadastrado na lista. */
+@keyframes highlight {
+  from {
+    background-color: var(--success-soft);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+@utility animate-highlight {
+  animation: highlight 3.5s ease-out;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

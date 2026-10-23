@@ -18,6 +18,12 @@ const buttonVariants = cva(
         destructive:
           'bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
         link: 'text-primary underline-offset-4 hover:underline',
+        // Variantes do Dokimos (design): decisões de aprovação.
+        approve:
+          'border-success-border bg-background text-success-strong hover:bg-success-soft dark:bg-transparent',
+        reject:
+          'border-danger-border bg-background text-danger-strong hover:bg-danger-soft dark:bg-transparent',
+        danger: 'bg-danger text-white hover:bg-danger/90',
       },
       size: {
         default:
