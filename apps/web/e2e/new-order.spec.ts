@@ -76,6 +76,25 @@ test.describe('Novo pedido', () => {
     ).toBeVisible();
   });
 
+  test('depois de clicar numa pendência o formulário continua utilizável e o erro some ao corrigir', async ({
+    page,
+  }) => {
+    await page.goto('/pedidos/novo');
+    await page.getByRole('button', { name: 'Selecione o fornecedor.' }).click();
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'Selecione o fornecedor.' }),
+    ).toBeVisible();
+
+    await chooseSupplier(page, 'Votorantim Cimentos');
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'Selecione o fornecedor.' }),
+    ).toHaveCount(0);
+    await page.getByRole('button', { name: 'Adicionar item' }).click();
+    await expect(page.getByRole('listitem', { name: /^Item \d$/ })).toHaveCount(
+      2,
+    );
+  });
+
   test('quantidade negativa e preço não numérico mostram erro no item e não habilitam o envio', async ({
     page,
   }) => {

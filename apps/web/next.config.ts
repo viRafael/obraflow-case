@@ -11,8 +11,9 @@ const nextConfig: NextConfig = {
   // Padrões do Next 16: Cache Components + Partial Prefetching (ver CLAUDE.md, seção Front-end).
   cacheComponents: true,
   partialPrefetching: true,
-  // Indicador do modo dev no canto direito (no esquerdo ele cobre o botão de tema da barra lateral).
-  devIndicators: { position: 'bottom-right' },
+  // Indicador do modo dev no canto direito (no esquerdo ele cobre o botão de tema da barra lateral);
+  // desligado nos testes e2e para não aparecer nos screenshots.
+  devIndicators: process.env.E2E ? false : { position: 'bottom-right' },
   turbopack: {
     rules: {
       '*.css': {

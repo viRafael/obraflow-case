@@ -5,7 +5,7 @@ PRD enxuto: aponta para os documentos que já detalham cada parte e acrescenta s
 
 | Assunto | Documento |
 |---|---|
-| Enunciado e critérios de avaliação | [`README.md`](../README.md) |
+| Enunciado e critérios de avaliação | [`DESAFIO.md`](DESAFIO.md) |
 | Decisões e contexto do projeto | [`CLAUDE.md`](../CLAUDE.md) |
 | Telas e estados | [`design/export/canvas/`](design/export/canvas/) · [canvas](https://claude.ai/artifact/MVmw1mojRWkZokNnAQhQdp) |
 | Rotas, payloads, erros e modelo da alçada | [`api-contract.md`](api-contract.md) |
@@ -90,10 +90,10 @@ Cada critério é verificável no app ou num teste. **[T]** = coberto por teste 
 - [x] **[T]** Editar ou remover uma faixa não altera pedidos já criados.
 
 ### 5.4 Geral
-- [ ] `docker compose up` sobe banco, API e front; o seed popula ao menos 2 obras, usuários, fornecedores, faixas e pedidos nos 3 estados.
+- [x] `docker compose up` sobe banco, API e front; o seed popula ao menos 2 obras, usuários, fornecedores, faixas e pedidos nos 3 estados.
 - [x] Layout responsivo em 375 px sem scroll horizontal.
 - [x] API fora do ar: todas as telas mostram erro com "Tentar novamente", nunca tela branca.
-- [ ] README com: como rodar, seed, endpoints, screenshots, tecnologias e motivos, modelagem da alçada,
+- [x] README com: como rodar, seed, endpoints, screenshots, tecnologias e motivos, modelagem da alçada,
       comunicação front/back, consistência e integridade, o que mudaria em produção.
 
 ## 6. Plano de entrega

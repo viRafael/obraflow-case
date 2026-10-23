@@ -60,7 +60,7 @@ export default defineConfig({
       url: `http://localhost:${WEB_PORT}/pedidos`,
       timeout: 180_000,
       reuseExistingServer: false,
-      env: { NEXT_PUBLIC_API_URL: API_URL },
+      env: { NEXT_PUBLIC_API_URL: API_URL, E2E: '1' },
     },
   ],
 });

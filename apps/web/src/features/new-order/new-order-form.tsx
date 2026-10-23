@@ -79,16 +79,17 @@ export function NewOrderForm({ projects }: { projects: Project[] }) {
     setError,
     reset,
     formState,
-    trigger,
     setFocus,
   } = form;
 
   /**
-   * Clique numa pendência: valida o formulário inteiro (todos os campos com problema passam a
-   * mostrar o erro no próprio campo, mesmo os que a pessoa ainda não visitou) e leva o foco até ele.
+   * Clique numa pendência: mostra o erro em todos os campos com problema (mesmo os que a pessoa
+   * ainda não visitou) e leva o foco até o campo. Simula uma tentativa de envio com uma ação vazia:
+   * depois dela o formulário revalida cada campo a cada mudança, então o erro some assim que o
+   * campo é corrigido (com trigger() o erro ficava preso nos campos ainda não tocados).
    */
   async function revealIssue(field?: string) {
-    await trigger();
+    await handleSubmit(() => {})();
     if (field) setFocus(field as Path<OrderFormValues>);
   }
   const values = useWatch({ control }) as OrderFormValues;

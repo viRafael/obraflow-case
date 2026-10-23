@@ -1,6 +1,6 @@
 # Contrato da API — Dokimos
 
-API HTTP + JSON consumida pelo front-end (Next.js). Derivada dos requisitos do `README.md` e do design em `docs/design/export/canvas/`.
+API HTTP + JSON consumida pelo front-end (Next.js). Derivada dos requisitos do enunciado (`docs/DESAFIO.md`) e do design em `docs/design/export/canvas/`.
 
 - **Base URL:** `http://localhost:3333/api`
 - **Documentação interativa:** `http://localhost:3333/api/docs` (Swagger)

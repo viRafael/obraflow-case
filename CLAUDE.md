@@ -2,8 +2,9 @@
 
 ## O que é
 Desafio técnico do processo seletivo da **ObraFlow** (startup, vaga dev júnior, PJ, remoto, 30h/sem).
-Enunciado completo no `README.md` (original deles — **não sobrescrever a seção do desafio**; nossa documentação
-entra em seção própria, ex.: `## Decisões técnicas`, ou o README é reescrito só no final, de forma consciente).
+Enunciado original preservado em `docs/DESAFIO.md`. O `README.md` é a documentação da solução (como rodar, telas,
+`## Decisões técnicas`, API, testes, produção). Screenshots em `docs/screenshots/`, gerados por
+`SCREENSHOTS=1 pnpm --filter @obraflow/web test:e2e e2e/screenshots.spec.ts`.
 
 - **Prazo:** 01/11/2026 às 23:59 — entrega via **Pull Request** a partir de um **fork** de `ObraFlow/obraflow-case`.
 - No PR: e-mail e telefone/WhatsApp do candidato.
