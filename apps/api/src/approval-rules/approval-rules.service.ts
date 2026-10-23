@@ -1,7 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from '../common/errors/app.exception.js';
 import { isUniqueViolation } from '../common/errors/prisma-errors.js';
-import { coverage, resolveRule, withRanges } from '../common/domain/approval-rules.js';
+import {
+  coverage,
+  resolveRule,
+  withRanges,
+} from '../common/domain/approval-rules.js';
 import { Decimal, formatBRL, formatMoney } from '../common/domain/money.js';
 import { PrismaService } from '../common/prisma/prisma.service.js';
 import type { ApprovalRuleDto } from './approval-rule.dto.js';
@@ -53,17 +57,19 @@ export class ApprovalRulesService {
     const existing = await this.findRule(id);
     await this.assertUsersExist(dto.approverIds);
 
-    // Numa transação: a faixa nunca fica, nem por um instante, sem aprovadores ou com a cadeia pela metade.
+    // Uma única escrita aninhada (transação implícita): o UPDATE da faixa vem primeiro e trava a linha,
+    // então duas edições simultâneas da mesma faixa são aplicadas uma depois da outra, sem misturar
+    // as cadeias. A faixa nunca fica, nem por um instante, sem aprovadores ou com a cadeia pela metade.
     await this.saveOrTranslateConflict(dto, () =>
-      this.prisma.$transaction(async (tx) => {
-        await tx.approvalRuleApprover.deleteMany({ where: { ruleId: id } });
-        return tx.approvalRule.update({
-          where: { id },
-          data: {
-            maxAmount: dto.maxAmount,
-            approvers: { create: toApproverRows(dto.approverIds) },
+      this.prisma.approvalRule.update({
+        where: { id },
+        data: {
+          maxAmount: dto.maxAmount,
+          approvers: {
+            deleteMany: {},
+            create: toApproverRows(dto.approverIds),
           },
-        });
+        },
       }),
     );
     return this.findWithRange(existing.projectId, id);
@@ -156,7 +162,7 @@ export class ApprovalRulesService {
     try {
       return await save();
     } catch (error) {
-      if (!isUniqueViolation(error)) throw error;
+      if (!isUniqueViolation(error, 'maxAmount')) throw error;
       if (dto.maxAmount === null) {
         throw new AppException(
           HttpStatus.CONFLICT,

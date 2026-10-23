@@ -181,6 +181,40 @@ describe('Pedidos de compra (e2e)', () => {
       ]);
     });
 
+    it('total que não cabe no banco → 400 no item (e não 500)', async () => {
+      const res = await api()
+        .post('/api/purchase-orders')
+        .send(
+          validOrder({
+            items: [
+              {
+                description: 'Item fora de escala',
+                quantity: '999999999',
+                unit: 'un',
+                unitPrice: '999999999999.99',
+              },
+            ],
+          }),
+        )
+        .expect(400);
+      expect(res.body.details).toEqual([
+        {
+          field: 'items.0',
+          message: 'O total do item excede o valor máximo permitido.',
+        },
+      ]);
+    });
+
+    it('id fora do intervalo do banco → 400 (e não 500)', async () => {
+      await api().get('/api/purchase-orders/99999999999').expect(400);
+      await api().get('/api/purchase-orders/abc').expect(400);
+      const res = await api()
+        .post('/api/purchase-orders')
+        .send(validOrder({ projectId: 99999999999 }))
+        .expect(400);
+      expect(res.body.details[0].field).toBe('projectId');
+    });
+
     it('referências inexistentes → 422 INVALID_REFERENCE', async () => {
       const res = await api()
         .post('/api/purchase-orders')

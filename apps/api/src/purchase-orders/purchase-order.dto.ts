@@ -8,7 +8,6 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPositive,
   IsString,
   Length,
   Matches,
@@ -24,6 +23,7 @@ import {
   QUANTITY,
 } from '../common/validation/decimal-string.js';
 import { EmptyToUndefined, Trim } from '../common/validation/decorators.js';
+import { IsId } from '../common/validation/ids.js';
 
 export class OrderItemDto {
   /** @example "Cimento CP-II 50kg" */
@@ -60,18 +60,15 @@ export class OrderItemDto {
 
 export class CreatePurchaseOrderDto {
   /** @example 1 */
-  @IsPositive({ message: 'Selecione a obra.' })
-  @IsInt({ message: 'Selecione a obra.' })
+  @IsId('Selecione a obra.')
   projectId: number;
 
   /** @example 1 */
-  @IsPositive({ message: 'Selecione o fornecedor.' })
-  @IsInt({ message: 'Selecione o fornecedor.' })
+  @IsId('Selecione o fornecedor.')
   supplierId: number;
 
   /** Quem está fazendo o pedido (usuário de "Visualizando como"). @example 4 */
-  @IsPositive({ message: 'Informe o solicitante.' })
-  @IsInt({ message: 'Informe o solicitante.' })
+  @IsId('Informe o solicitante.')
   requesterId: number;
 
   /** Data do pedido (AAAA-MM-DD). @example "2026-10-22" */
@@ -104,21 +101,21 @@ export class ListPurchaseOrdersQuery {
 
   @IsOptional()
   @Type(() => Number)
-  @IsInt({ message: 'Obra inválida.' })
+  @IsId('Obra inválida.')
   projectId?: number;
 
   /** Só pedidos cuja etapa atual é deste usuário ("Aguardando minha decisão"). */
   @IsOptional()
   @Type(() => Number)
-  @IsInt({ message: 'Usuário inválido.' })
+  @IsId('Usuário inválido.')
   awaitingUserId?: number;
 
   /** Busca por fornecedor ou código ("PED-009" ou "9"). */
   @EmptyToUndefined()
   @Trim()
   @IsOptional()
-  @MaxLength(120)
-  @IsString()
+  @MaxLength(120, { message: 'A busca deve ter no máximo 120 caracteres.' })
+  @IsString({ message: 'Busca inválida.' })
   q?: string;
 
   @IsOptional()
@@ -137,8 +134,7 @@ export class ListPurchaseOrdersQuery {
 
 export class ApproveDto {
   /** Etapa que o usuário estava vendo ao decidir (controle de concorrência). @example 32 */
-  @IsPositive({ message: 'Etapa inválida.' })
-  @IsInt({ message: 'Etapa inválida.' })
+  @IsId('Etapa inválida.')
   stepId: number;
 }
 

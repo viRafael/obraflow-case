@@ -14,7 +14,7 @@ API HTTP + JSON consumida pelo front-end (Next.js). Derivada dos requisitos do `
 | Dinheiro | **String decimal** com até 2 casas, nas duas direções: `"12500.00"`. Nunca `number` (evita erro de ponto flutuante). |
 | Quantidade | String decimal com até 3 casas: `"12.5"`. |
 | Datas | `orderDate` é só data: `"2026-10-21"`. Timestamps em ISO 8601 UTC: `"2026-10-21T14:32:00.000Z"`. |
-| IDs | Inteiros. Pedidos também têm `code` legível: `"PED-001"`. |
+| IDs | Inteiros de 1 a 2.147.483.647 (fora disso → `400`). Pedidos também têm `code` legível: `"PED-001"`. |
 | Totais | Sempre calculados pelo backend. O cliente nunca envia totais. |
 | Listas | Retornam `{ "data": [...] }`. A lista de pedidos é paginada (`meta`). |
 
@@ -131,14 +131,14 @@ Validação: `name` 2–120, `email` válido e único (`409 DUPLICATE_EMAIL`), `
 
 **`GET /suppliers?q=voto`** → `200`. `q` é opcional (busca por nome, sem diferenciar maiúsculas).
 ```json
-{ "data": [ { "id": 1, "name": "Votorantim Cimentos", "taxId": "01.637.895/0001-32" } ] }
+{ "data": [ { "id": 1, "name": "Votorantim Cimentos", "taxId": "12345678000190" } ] }
 ```
 
 **`POST /suppliers`** → `201`
 ```json
 { "name": "Amanco", "taxId": "00.000.000/0001-00" }
 ```
-`taxId` (CNPJ) é opcional.
+`taxId` (CNPJ) é opcional; aceita com ou sem pontuação e é gravado só com os 14 dígitos (assim o mesmo CNPJ não é cadastrado duas vezes com formatações diferentes → `409 CONFLICT`).
 
 ---
 
@@ -244,6 +244,7 @@ Validação:
 | `items[].quantity` | decimal > 0, até 3 casas |
 | `items[].unit` | um dos valores de `Unit` |
 | `items[].unitPrice` | decimal ≥ 0, até 2 casas |
+| totais | o total de cada item e o do pedido precisam caber em R$ 999.999.999.999,99 (`400` em `items.N` ou `items`) |
 
 Processamento, numa **única transação**:
 1. Calcula `total` de cada item (`quantity × unitPrice`, arredondado a 2 casas) e o `totalAmount` do pedido.

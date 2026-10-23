@@ -7,6 +7,8 @@ export type Decimal = Prisma.Decimal;
 
 export const ZERO = new Decimal(0);
 export const ONE_CENT = new Decimal('0.01');
+/** Maior valor que cabe nas colunas de dinheiro (numeric(14,2)). */
+export const MAX_MONEY = new Decimal('999999999999.99');
 
 /** Arredonda para centavos (meio para cima, como em valores monetários). */
 export function toCents(value: Decimal): Decimal {

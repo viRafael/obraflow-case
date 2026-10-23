@@ -6,12 +6,12 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ParseIdPipe } from '../common/validation/ids.js';
 import { ApprovalRuleDto, ResolveRuleQuery } from './approval-rule.dto.js';
 import { ApprovalRulesService } from './approval-rules.service.js';
 
@@ -25,7 +25,7 @@ export class ApprovalRulesController {
     summary:
       'Lista as faixas da obra (ordenadas, com início calculado) e a cobertura',
   })
-  list(@Param('projectId', ParseIntPipe) projectId: number) {
+  list(@Param('projectId', ParseIdPipe) projectId: number) {
     return this.rules.list(projectId);
   }
 
@@ -34,7 +34,7 @@ export class ApprovalRulesController {
     summary: 'Prévia: qual faixa e cadeia se aplicam a um valor',
   })
   resolve(
-    @Param('projectId', ParseIntPipe) projectId: number,
+    @Param('projectId', ParseIdPipe) projectId: number,
     @Query() query: ResolveRuleQuery,
   ) {
     return this.rules.resolve(projectId, query.amount);
@@ -43,7 +43,7 @@ export class ApprovalRulesController {
   @Post('projects/:projectId/approval-rules')
   @ApiOperation({ summary: 'Cria uma faixa na obra' })
   create(
-    @Param('projectId', ParseIntPipe) projectId: number,
+    @Param('projectId', ParseIdPipe) projectId: number,
     @Body() dto: ApprovalRuleDto,
   ) {
     return this.rules.create(projectId, dto);
@@ -53,7 +53,7 @@ export class ApprovalRulesController {
   @ApiOperation({
     summary: 'Substitui o limite e a cadeia de aprovadores da faixa',
   })
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: ApprovalRuleDto) {
+  update(@Param('id', ParseIdPipe) id: number, @Body() dto: ApprovalRuleDto) {
     return this.rules.update(id, dto);
   }
 
@@ -62,7 +62,7 @@ export class ApprovalRulesController {
   @ApiOperation({
     summary: 'Remove a faixa (pedidos existentes não são afetados)',
   })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIdPipe) id: number) {
     return this.rules.remove(id);
   }
 }

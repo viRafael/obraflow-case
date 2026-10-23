@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsOptional, IsString, Length, Matches } from 'class-validator';
 import { EmptyToUndefined, Trim } from '../common/validation/decorators.js';
 
@@ -10,13 +11,17 @@ export class CreateSupplierDto {
   @IsString({ message: 'Informe o nome do fornecedor.' })
   name: string;
 
-  /** CNPJ, com ou sem pontuação. @example "12.345.678/0001-90" */
+  /**
+   * CNPJ, com ou sem pontuação. É gravado só com os dígitos, para que
+   * "12.345.678/0001-90" e "12345678000190" sejam reconhecidos como o mesmo fornecedor.
+   * @example "12.345.678/0001-90"
+   */
   @EmptyToUndefined()
-  @Trim()
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.replace(/[./\-\s]/g, '') : value,
+  )
   @IsOptional()
-  @Matches(/^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/, {
-    message: 'CNPJ inválido.',
-  })
+  @Matches(/^\d{14}$/, { message: 'CNPJ inválido.' })
   taxId?: string;
 }
 
@@ -25,7 +30,7 @@ export class ListSuppliersQuery {
   @EmptyToUndefined()
   @Trim()
   @IsOptional()
-  @Length(1, 120)
-  @IsString()
+  @Length(1, 120, { message: 'A busca deve ter no máximo 120 caracteres.' })
+  @IsString({ message: 'Busca inválida.' })
   q?: string;
 }

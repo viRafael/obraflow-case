@@ -129,6 +129,31 @@ describe('Regras de alçada (e2e)', () => {
     expect(res.body.code).toBe('INVALID_REFERENCE');
   });
 
+  it('edições simultâneas da mesma faixa não se misturam', async () => {
+    const chains = [
+      [USERS.joao, USERS.amanda],
+      [USERS.amanda, USERS.carlos, USERS.joao],
+      [USERS.carlos],
+      [USERS.fernando, USERS.joao],
+    ];
+
+    const responses = await Promise.all(
+      chains.map((approverIds) =>
+        api()
+          .put('/api/approval-rules/2')
+          .send({ maxAmount: '50000.00', approverIds }),
+      ),
+    );
+    expect(responses.map((r) => r.status)).toEqual([200, 200, 200, 200]);
+
+    // A cadeia final é exatamente uma das enviadas (a última a ser aplicada), nunca uma mistura.
+    const final = await prisma.approvalRuleApprover.findMany({
+      where: { ruleId: 2 },
+      orderBy: { position: 'asc' },
+    });
+    expect(chains).toContainEqual(final.map((a) => a.userId));
+  });
+
   it('editar reordena a cadeia; remover apaga a faixa', async () => {
     const [, second] = (
       await api().get(`/api/projects/${PROJECTS.mare}/approval-rules`)

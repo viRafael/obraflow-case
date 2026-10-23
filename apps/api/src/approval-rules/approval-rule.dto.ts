@@ -5,11 +5,10 @@ import {
   ArrayUnique,
   IsArray,
   IsDefined,
-  IsInt,
-  IsPositive,
   ValidateIf,
 } from 'class-validator';
 import { IsDecimalString, MONEY } from '../common/validation/decimal-string.js';
+import { IsId } from '../common/validation/ids.js';
 
 export class ApprovalRuleDto {
   /**
@@ -33,8 +32,7 @@ export class ApprovalRuleDto {
    * Reordenar = enviar o array na nova ordem.
    * @example [1, 2]
    */
-  @IsInt({ each: true, message: 'Aprovador inválido.' })
-  @IsPositive({ each: true, message: 'Aprovador inválido.' })
+  @IsId('Aprovador inválido.', { each: true })
   @ArrayUnique({
     message: 'O mesmo aprovador não pode aparecer duas vezes na faixa.',
   })

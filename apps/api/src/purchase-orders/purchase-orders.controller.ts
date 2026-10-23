@@ -5,11 +5,11 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ParseIdPipe } from '../common/validation/ids.js';
 import {
   ApproveDto,
   CreatePurchaseOrderDto,
@@ -33,7 +33,7 @@ export class PurchaseOrdersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Detalhe do pedido: itens, etapas e histórico' })
-  get(@Param('id', ParseIntPipe) id: number) {
+  get(@Param('id', ParseIdPipe) id: number) {
     return this.orders.get(id);
   }
 
@@ -48,7 +48,7 @@ export class PurchaseOrdersController {
   @Post(':id/approve')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Aprova a etapa atual' })
-  approve(@Param('id', ParseIntPipe) id: number, @Body() dto: ApproveDto) {
+  approve(@Param('id', ParseIdPipe) id: number, @Body() dto: ApproveDto) {
     return this.orders.approve(id, dto.stepId);
   }
 
@@ -57,7 +57,7 @@ export class PurchaseOrdersController {
   @ApiOperation({
     summary: 'Rejeita o pedido na etapa atual (motivo obrigatório)',
   })
-  reject(@Param('id', ParseIntPipe) id: number, @Body() dto: RejectDto) {
+  reject(@Param('id', ParseIdPipe) id: number, @Body() dto: RejectDto) {
     return this.orders.reject(id, dto.stepId, dto.reason);
   }
 }

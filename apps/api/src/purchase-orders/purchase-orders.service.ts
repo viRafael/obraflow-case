@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { OrderStatus, type Prisma } from '../../prisma/generated/client.js';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { OrderStatus, Prisma } from '../../prisma/generated/client.js';
 import { HistoryType, StepStatus } from '../../prisma/generated/enums.js';
 import { noRuleMessage } from '../approval-rules/approval-rules.service.js';
 import {
@@ -13,7 +13,12 @@ import {
   startFlow,
 } from '../common/domain/approval-flow.js';
 import { resolveRule } from '../common/domain/approval-rules.js';
-import { Decimal, itemTotal, orderTotal } from '../common/domain/money.js';
+import {
+  Decimal,
+  itemTotal,
+  MAX_MONEY,
+  orderTotal,
+} from '../common/domain/money.js';
 import { PrismaService } from '../common/prisma/prisma.service.js';
 import type {
   CreatePurchaseOrderDto,
@@ -53,54 +58,60 @@ export class PurchaseOrdersService {
       };
     });
     const totalAmount = orderTotal(items.map((item) => item.total));
+    assertTotalsFit(items, totalAmount);
 
     // Numa transação: ou grava cabeçalho, itens, etapas e histórico, ou não grava nada.
-    const orderId = await this.prisma.$transaction(async (tx) => {
-      const rules = await tx.approvalRule.findMany({
-        where: { projectId: dto.projectId },
-        include: { approvers: { orderBy: { position: 'asc' } } },
-      });
-      const rule = resolveRule(rules, totalAmount);
-      if (!rule) {
-        const project = await tx.project.findUniqueOrThrow({
-          where: { id: dto.projectId },
+    // RepeatableRead: faixas e aprovadores são lidos da mesma "foto" do banco, mesmo que alguém
+    // edite a faixa ao mesmo tempo (a cadeia copiada nunca mistura duas versões da faixa).
+    const orderId = await this.prisma.$transaction(
+      async (tx) => {
+        const rules = await tx.approvalRule.findMany({
+          where: { projectId: dto.projectId },
+          include: { approvers: { orderBy: { position: 'asc' } } },
         });
-        throw AppException.unprocessable(
-          'NO_APPROVAL_RULE',
-          noRuleMessage(totalAmount, project.name),
-        );
-      }
+        const rule = resolveRule(rules, totalAmount);
+        if (!rule) {
+          const project = await tx.project.findUniqueOrThrow({
+            where: { id: dto.projectId },
+          });
+          throw AppException.unprocessable(
+            'NO_APPROVAL_RULE',
+            noRuleMessage(totalAmount, project.name),
+          );
+        }
 
-      // A cadeia da faixa é copiada para o pedido: editar a faixa depois não muda este pedido.
-      const flow = startFlow(rule.approvers.length);
-      const order = await tx.purchaseOrder.create({
-        data: {
-          projectId: dto.projectId,
-          supplierId: dto.supplierId,
-          requesterId: dto.requesterId,
-          orderDate: new Date(`${dto.orderDate}T00:00:00.000Z`),
-          notes: dto.notes,
-          totalAmount,
-          status: flow.status,
-          currentStep: flow.currentStep,
-          ruleId: rule.id,
-          ruleFromAmount: rule.fromAmount,
-          ruleMaxAmount: rule.maxAmount,
-          items: { create: items },
-          steps: {
-            create: rule.approvers.map((approver, index) => ({
-              position: approver.position,
-              approverId: approver.userId,
-              status: flow.steps[index],
-            })),
+        // A cadeia da faixa é copiada para o pedido: editar a faixa depois não muda este pedido.
+        const flow = startFlow(rule.approvers.length);
+        const order = await tx.purchaseOrder.create({
+          data: {
+            projectId: dto.projectId,
+            supplierId: dto.supplierId,
+            requesterId: dto.requesterId,
+            orderDate: new Date(`${dto.orderDate}T00:00:00.000Z`),
+            notes: dto.notes,
+            totalAmount,
+            status: flow.status,
+            currentStep: flow.currentStep,
+            ruleId: rule.id,
+            ruleFromAmount: rule.fromAmount,
+            ruleMaxAmount: rule.maxAmount,
+            items: { create: items },
+            steps: {
+              create: rule.approvers.map((approver, index) => ({
+                position: approver.position,
+                approverId: approver.userId,
+                status: flow.steps[index],
+              })),
+            },
+            events: {
+              create: { type: HistoryType.CREATED, actorId: dto.requesterId },
+            },
           },
-          events: {
-            create: { type: HistoryType.CREATED, actorId: dto.requesterId },
-          },
-        },
-      });
-      return order.id;
-    });
+        });
+        return order.id;
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+    );
 
     return this.get(orderId);
   }
@@ -299,6 +310,37 @@ export class PurchaseOrdersService {
         details,
       );
     }
+  }
+}
+
+/**
+ * Cada número do item é validado no DTO, mas o produto (e a soma) pode passar do que cabe
+ * na coluna numeric(14,2). Sem esta checagem, o banco recusaria o valor e a API responderia 500.
+ */
+function assertTotalsFit(items: { total: Decimal }[], totalAmount: Decimal) {
+  const details: ErrorDetail[] = items.flatMap((item, index) =>
+    item.total.gt(MAX_MONEY)
+      ? [
+          {
+            field: `items.${index}`,
+            message: 'O total do item excede o valor máximo permitido.',
+          },
+        ]
+      : [],
+  );
+  if (details.length === 0 && totalAmount.gt(MAX_MONEY)) {
+    details.push({
+      field: 'items',
+      message: 'O total do pedido excede o valor máximo permitido.',
+    });
+  }
+  if (details.length > 0) {
+    throw new AppException(
+      HttpStatus.BAD_REQUEST,
+      'VALIDATION_ERROR',
+      'Dados inválidos.',
+      details,
+    );
   }
 }
 
