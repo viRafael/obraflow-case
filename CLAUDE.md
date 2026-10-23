@@ -116,6 +116,12 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
   semânticas `success|warning|danger|info` com variantes `-soft|-border|-strong` (ex.: `bg-success-soft text-success-strong`).
 - Fonte Inter (`next/font`). Dinheiro sempre com `tabular-nums`. Sem sobrescrever a escala de fontes do Tailwind.
 - Comandos (raiz): `pnpm dev:web` (porta 3030; precisa da API em 3333), `pnpm test:web`. No app: `pnpm typecheck`, `pnpm lint`, `pnpm build`.
+- **Conferência visual**: a captura de tela da extensão do Chrome trava quando a janela fica escondida. Alternativa confiável:
+  rodar o build de produção (`pnpm build && pnpm start`, porta 3030) e usar `brave --headless=new --screenshot=… --window-size=1440,900
+  --virtual-time-budget=5000 --user-data-dir=<scratchpad>` (o modo dev não "termina de carregar" por causa do HMR). Testes de interação:
+  `read_page`/`find` da extensão funcionam mesmo com a janela escondida.
+- Tela de Pedidos (`features/purchase-orders/`): estado na URL (`?aba=&obra=&busca=&pagina=&pedido=&destaque=`); contadores das abas
+  vêm de uma consulta separada com `awaitingUserId` + `pageSize=1` (a API filtra a lista por esse parâmetro).
 - Prettier compartilhado na raiz (`.prettierrc`, com `prettier-plugin-tailwindcss` ordenando as classes).
 
 ## Git / entrega
