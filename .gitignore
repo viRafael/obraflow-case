@@ -9,6 +9,7 @@ dist/
 .next/
 out/
 *.tsbuildinfo
+next-env.d.ts
 
 # ambiente
 .env
@@ -19,6 +20,8 @@ out/
 coverage/
 
 # editor / sistema
+*.pem
+.vercel
 .idea/
 .vscode/*
 !.vscode/extensions.json

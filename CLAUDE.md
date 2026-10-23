@@ -94,6 +94,30 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
 - Ao testar a API manualmente, encerrar o servidor com `fuser -k 3333/tcp` (um `pkill -f` com o caminho mata o próprio shell).
 - O Prisma 7 bloqueia `migrate reset` vindo de agente de IA sem consentimento explícito do usuário: sempre perguntar.
 
+## Front-end — estrutura e convenções
+- **Next.js 16.4** (App Router, Turbopack) + **React 19** + **Tailwind v4** + **shadcn/ui 4** (base Radix, preset Nova) +
+  **TanStack Query** (dados) + **react-hook-form + zod** (formulários) + **sonner** (toasts) + **decimal.js** (dinheiro) + **next-themes**.
+- **Este Next tem breaking changes**: ler `apps/web/node_modules/next/dist/docs/` antes de usar uma API (o `AGENTS.md` do app avisa isso).
+  - `cacheComponents` + `partialPrefetching` ligados (padrão). Com isso a rota anterior **não desmonta** ao navegar (fica escondida via `<Activity>`):
+    dialogs/forms mantêm estado → resetar explicitamente quando necessário (guia `02-guides/preserving-ui-state.md`).
+  - `useSearchParams` exige uma fronteira `<Suspense>` acima.
+  - `redirect()` dentro de page quebra a validação de prerender → redirecionamentos fixos ficam em `next.config.ts` (`/` → `/pedidos`).
+  - `LayoutProps`/`PageProps` são tipos globais gerados por `next typegen` (o script `typecheck` já roda isso).
+- Estrutura (`apps/web/src/`):
+  - `app/` — rotas finas: `/pedidos`, `/pedidos/novo`, `/alcadas` (URLs em português; a API é em inglês).
+  - `components/ui/` — shadcn (gerado; não editar à toa). `components/providers/` — Query, tema, tooltip, toaster e **ViewerProvider**.
+  - `lib/api/` — `types.ts` (espelho do contrato), `client.ts` (`api()` + `ApiError` com `fieldError('items.1.quantity')`),
+    `endpoints.ts` (uma função por rota), `queries.ts` (hooks + `queryKeys`; mutações invalidam por prefixo).
+  - `lib/money.ts` (mesmas regras do backend, com testes de paridade) e `lib/format.ts` (BRL, datas, faixas, rótulos).
+  - Telas futuras: `features/<tela>/` (componentes da tela), mantendo `app/` só com a composição.
+- **"Visualizando como"**: `useViewer()` (persona em localStorage via `useSyncExternalStore`, padrão Beatriz). Define o `requesterId`
+  do novo pedido e quem vê os botões de decisão.
+- Tema: tokens do design mapeados para as variáveis do shadcn em `globals.css` (primária âmbar, neutros zinc, sidebar escura) +
+  semânticas `success|warning|danger|info` com variantes `-soft|-border|-strong` (ex.: `bg-success-soft text-success-strong`).
+- Fonte Inter (`next/font`). Dinheiro sempre com `tabular-nums`. Sem sobrescrever a escala de fontes do Tailwind.
+- Comandos (raiz): `pnpm dev:web` (porta 3030; precisa da API em 3333), `pnpm test:web`. No app: `pnpm typecheck`, `pnpm lint`, `pnpm build`.
+- Prettier compartilhado na raiz (`.prettierrc`, com `prettier-plugin-tailwindcss` ordenando as classes).
+
 ## Git / entrega
 - `origin`   → `git@github.com:viRafael/obraflow-case.git` (fork do candidato, GitHub user `viRafael`)
 - `upstream` → `git@github.com:ObraFlow/obraflow-case.git` (repo deles, só leitura)

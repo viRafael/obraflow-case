@@ -13,6 +13,12 @@
     "test:api": "pnpm --filter @obraflow/api test",
     "db:migrate": "pnpm --filter @obraflow/api db:migrate",
     "db:seed": "pnpm --filter @obraflow/api db:seed",
-    "test:api:e2e": "pnpm --filter @obraflow/api test:e2e"
+    "test:api:e2e": "pnpm --filter @obraflow/api test:e2e",
+    "dev:web": "pnpm --filter @obraflow/web dev",
+    "test:web": "pnpm --filter @obraflow/web test"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1"
   }
 }
