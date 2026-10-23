@@ -131,6 +131,18 @@ Estrutura: **monorepo pnpm** com `apps/api` (Nest) e `apps/web` (Next) + `docker
   todos os itens (mostra o erro "pelo menos 1 item", requisito do README).
 - Prettier compartilhado na raiz (`.prettierrc`, com `prettier-plugin-tailwindcss` ordenando as classes).
 
+## Docker
+- `docker compose up --build` sobe db (5433), api (3333) e web (3030). A API aplica as migrations e roda
+  `dist/prisma/seed-if-empty.js` (popula só se o banco estiver vazio: reiniciar não apaga dados). `docker compose up -d db` = só o banco.
+- Imagens enxutas (validadas do zero): API ~880 MB (multi-stage + `pnpm deploy --prod --legacy`; `prisma`/`dotenv` são dependências de
+  produção por causa do `migrate deploy`), web ~380 MB (Next `output: 'standalone'` via `NEXT_OUTPUT=standalone`).
+- Armadilhas resolvidas: store **e cache** do pnpm 11 em pastas temporárias apagadas na mesma etapa (senão +1 GB por camada);
+  generator do Prisma com `moduleFormat = "esm"` e `importFileExtension = "js"` explícitos (senão, gerado sem tsconfig no Docker,
+  os imports saem com `.ts`).
+- **Disco do candidato é pequeno (~3 GB livres)**: o build precisa do BuildKit (`docker-buildx`, já instalado). Após testar imagens,
+  remover o que foi criado (`docker compose -p <projeto> down -v --rmi local` + `docker buildx prune -af`). Nunca apagar imagens/volumes
+  de outros projetos dele sem pedir.
+
 ## Git / entrega
 - `origin`   → `git@github.com:viRafael/obraflow-case.git` (fork do candidato, GitHub user `viRafael`)
 - `upstream` → `git@github.com:ObraFlow/obraflow-case.git` (repo deles, só leitura)

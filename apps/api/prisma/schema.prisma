@@ -2,8 +2,12 @@
 // Decisões detalhadas em docs/api-contract.md ("Modelo da alçada").
 
 generator client {
-  provider = "prisma-client"
-  output   = "./generated"
+  provider            = "prisma-client"
+  output              = "./generated"
+  // Explícito para a geração não depender do ambiente: sem isso o Prisma deduz pela tsconfig e,
+  // no Docker (gerado antes de copiar a tsconfig), os imports saíam com extensão .ts.
+  moduleFormat        = "esm"
+  importFileExtension = "js"
 }
 
 datasource db {
