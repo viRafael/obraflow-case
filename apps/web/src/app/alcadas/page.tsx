@@ -1,10 +1,14 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
+import { ApprovalRulesView } from '@/features/approval-rules/approval-rules-view';
 
 export const metadata: Metadata = { title: 'Alçadas' };
 
-// Placeholder — a tela será implementada na próxima etapa.
 export default function AlcadasPage() {
   return (
-    <p className="text-sm text-muted-foreground">Regras de alçada por obra</p>
+    // Suspense: a obra selecionada vem da URL (useSearchParams).
+    <Suspense>
+      <ApprovalRulesView />
+    </Suspense>
   );
 }
