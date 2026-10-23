@@ -336,4 +336,4 @@ Os e2e nunca tocam o banco de desenvolvimento. Para o Playwright, use um Chromiu
 
 ---
 
-Rafael Vieira · rafaelvieira@ufba.br
+Rafael Vieira · contato@rafaelvieira.dev · WhatsApp (71) 99106-9718
